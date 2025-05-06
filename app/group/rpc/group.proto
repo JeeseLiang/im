@@ -1,9 +1,8 @@
 syntax = "proto3";
 package group;
-option go_package = "github.com/wslynn/wechat-gozero/proto/group";
+option go_package = "./group";
 
-import "proto/msg/msg.proto";
-
+import "../..//msg/rpc/msg.proto";
 
 // 添加好友
 message AddFriendRequest {
@@ -54,10 +53,22 @@ message MessageGroupInfoListResponse {
     repeated MessageGroupInfo list=1;
 }
 
+// 群组服务
+// 在单聊的基础上邀请用户加入群组, 成为群聊
+message GroupChatRequest{
+    int64 fromUid=1;    // 邀请者
+    int64 toUid=2;      // 被邀请者
+    string groupId=3;   // 群组id
+}
+message GroupChatResponse{
+    string groupId=1; // 发起邀请成功返回id，否则为空
+}
+
 service GroupClient {
     rpc AddFriend(AddFriendRequest) returns(AddFriendResponse);
     rpc HandleFriend(HandleFriendRequest) returns(HandleFriendResponse);
     rpc GroupUserList(GroupUserListRequest) returns(GroupUserListResponse);
     rpc UserGroupList(UserGroupListRequest) returns(UserGroupListResponse);
     rpc MessageGroupInfoList(MessageGroupInfoListRequest) returns(MessageGroupInfoListResponse);
+    rpc GroupChat(GroupChatRequest) returns(GroupChatResponse);
 }
