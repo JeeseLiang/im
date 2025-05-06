@@ -1,8 +1,8 @@
 syntax = "proto3";
 package group;
-option go_package = "./group";
+option go_package = "im_message/proto/group";
 
-import "../..//msg/rpc/msg.proto";
+import "app/msg/rpc/msg.proto";
 
 // 添加好友
 message AddFriendRequest {

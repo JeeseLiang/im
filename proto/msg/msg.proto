@@ -1,6 +1,6 @@
 syntax = "proto3";
 package msg;
-option go_package = "./msg";
+option go_package = "im_message/proto/msg";
 
 // 聊天消息结构
 message ChatMsg {
