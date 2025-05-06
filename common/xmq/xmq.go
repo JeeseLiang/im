@@ -4,13 +4,12 @@ import (
 	"context"
 	"encoding/json"
 
+	"im_message/common/xerr"
+
 	"github.com/segmentio/kafka-go"
-	"github.com/wslynn/wechat-gozero/common/xerr"
 
 	"github.com/pkg/errors"
 )
-
-
 
 // 生产到消息队列
 func PushToMq(ctx context.Context, mqWriter *kafka.Writer, object interface{}) error {

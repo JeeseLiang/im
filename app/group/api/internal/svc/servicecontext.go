@@ -1,8 +1,8 @@
 package svc
 
 import (
-	"github.com/wslynn/wechat-gozero/app/group/api/internal/config"
-	"github.com/wslynn/wechat-gozero/app/group/rpc/groupclient"
+	"im_message/app/group/api/internal/config"
+	"im_message/app/group/rpc/groupclient"
 
 	"github.com/zeromicro/go-zero/zrpc"
 )

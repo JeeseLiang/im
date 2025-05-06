@@ -4,13 +4,14 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/joho/godotenv"
-	"github.com/wslynn/wechat-gozero/common/interceptor"
+	"im_message/common/interceptor"
 
-	"github.com/wslynn/wechat-gozero/app/msg/rpc/internal/config"
-	"github.com/wslynn/wechat-gozero/app/msg/rpc/internal/server"
-	"github.com/wslynn/wechat-gozero/app/msg/rpc/internal/svc"
-	"github.com/wslynn/wechat-gozero/proto/msg"
+	"github.com/joho/godotenv"
+
+	"im_message/app/msg/rpc/internal/config"
+	"im_message/app/msg/rpc/internal/server"
+	"im_message/app/msg/rpc/internal/svc"
+	"im_message/proto/msg"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/logx"

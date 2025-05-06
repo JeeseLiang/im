@@ -3,18 +3,17 @@ package handler
 import (
 	"net/http"
 
+	"im_message/app/user/api/internal/logic"
+	"im_message/app/user/api/internal/svc"
+	"im_message/app/user/api/internal/types"
 	"im_message/common/xresp"
-
-	"im_message/app/group/api/internal/logic"
-	"im_message/app/group/api/internal/svc"
-	"im_message/app/group/api/internal/types"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
-func HandleFriendHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func QueryUserInfoHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.HandleFriendRequest
+		var req types.QueryUserInfoRequest
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.Error(w, err)
 			return
@@ -25,8 +24,8 @@ func HandleFriendHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		l := logic.NewHandleFriendLogic(r.Context(), svcCtx)
-		resp, err := l.HandleFriend(&req)
+		l := logic.NewQueryUserInfoLogic(r.Context(), svcCtx)
+		resp, err := l.QueryUserInfo(&req)
 		xresp.Response(r, w, resp, err)
 	}
 }

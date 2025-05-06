@@ -8,13 +8,14 @@ import (
 	"sync"
 	"time"
 
+	"im_message/app/msg/api/internal/svc"
+	"im_message/app/msg/api/internal/types"
+	"im_message/common/biz"
+	"im_message/common/ctxdata"
+	"im_message/common/xerr"
+	pbgroup "im_message/proto/group"
+
 	"github.com/segmentio/kafka-go"
-	"github.com/wslynn/wechat-gozero/app/msg/api/internal/svc"
-	"github.com/wslynn/wechat-gozero/app/msg/api/internal/types"
-	"github.com/wslynn/wechat-gozero/common/biz"
-	"github.com/wslynn/wechat-gozero/common/ctxdata"
-	"github.com/wslynn/wechat-gozero/common/xerr"
-	pbgroup "github.com/wslynn/wechat-gozero/proto/group"
 
 	"github.com/gorilla/websocket"
 	"github.com/zeromicro/go-zero/core/logx"

@@ -4,10 +4,11 @@ import (
 	"flag"
 	"fmt"
 
+	"im_message/app/group/api/internal/config"
+	"im_message/app/group/api/internal/handler"
+	"im_message/app/group/api/internal/svc"
+
 	"github.com/joho/godotenv"
-	"github.com/wslynn/wechat-gozero/app/group/api/internal/config"
-	"github.com/wslynn/wechat-gozero/app/group/api/internal/handler"
-	"github.com/wslynn/wechat-gozero/app/group/api/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/logx"

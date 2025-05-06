@@ -4,7 +4,7 @@ package handler
 import (
 	"net/http"
 
-	"github.com/wslynn/wechat-gozero/app/group/api/internal/svc"
+	"im_message/app/group/api/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
 )

@@ -6,9 +6,9 @@ package server
 import (
 	"context"
 
-	"github.com/wslynn/wechat-gozero/app/msg/rpc/internal/logic"
-	"github.com/wslynn/wechat-gozero/app/msg/rpc/internal/svc"
-	"github.com/wslynn/wechat-gozero/proto/msg"
+	"im_message/app/msg/rpc/internal/logic"
+	"im_message/app/msg/rpc/internal/svc"
+	"im_message/proto/msg"
 )
 
 type MessageClientServer struct {

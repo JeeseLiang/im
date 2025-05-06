@@ -6,30 +6,28 @@ import (
 	"im_message/app/user/api/internal/svc"
 	"im_message/app/user/api/internal/types"
 	"im_message/app/user/rpc/userclient"
-	"im_message/common/ctxdata"
 
 	"github.com/jinzhu/copier"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type PersonalInfoLogic struct {
+type QueryUserInfoLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewPersonalInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PersonalInfoLogic {
-	return &PersonalInfoLogic{
+func NewQueryUserInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *QueryUserInfoLogic {
+	return &QueryUserInfoLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *PersonalInfoLogic) PersonalInfo(req *types.PersonalInfoRequest) (*types.PersonalInfoResponse, error) {
-	uid := ctxdata.GetUidFromCtx(l.ctx)
+func (l *QueryUserInfoLogic) QueryUserInfo(req *types.QueryUserInfoRequest) (*types.PersonalInfoResponse, error) {
 	personInfo, err := l.svcCtx.UserRpc.PersonalInfo(l.ctx, &userclient.PersonalInfoRequest{
-		Id: uid,
+		Id: req.UserId,
 	})
 	if err != nil {
 		return nil, err

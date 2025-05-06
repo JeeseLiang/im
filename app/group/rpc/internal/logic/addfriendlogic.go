@@ -5,13 +5,13 @@ import (
 	"strings"
 	"time"
 
-	"github.com/wslynn/wechat-gozero/app/group/model"
-	"github.com/wslynn/wechat-gozero/app/group/rpc/internal/svc"
-	"github.com/wslynn/wechat-gozero/common/biz"
-	"github.com/wslynn/wechat-gozero/common/xerr"
-	"github.com/wslynn/wechat-gozero/common/xmq"
-	"github.com/wslynn/wechat-gozero/proto/group"
-	"github.com/wslynn/wechat-gozero/proto/msg"
+	"im_message/app/group/model"
+	"im_message/app/group/rpc/internal/svc"
+	"im_message/common/biz"
+	"im_message/common/xerr"
+	"im_message/common/xmq"
+	"im_message/proto/group"
+	"im_message/proto/msg"
 
 	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -59,11 +59,11 @@ func (l *AddFriendLogic) AddFriend(in *group.AddFriendRequest) (*group.AddFriend
 	}
 	// 加好友请求消息 放入消息队列
 	chatMsg := &msg.ChatMsg{
-		GroupId: groupId,
-		SenderId: fromUid,
-		Type: 0,
-		Content: "请求加你为好友",
-		Uuid: biz.GetUuid(),
+		GroupId:    groupId,
+		SenderId:   fromUid,
+		Type:       0,
+		Content:    "请求加你为好友",
+		Uuid:       biz.GetUuid(),
 		CreateTime: time.Now().UnixMilli(),
 	}
 	err = xmq.PushToMq(l.ctx, l.svcCtx.MqWriter, chatMsg)

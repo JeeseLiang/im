@@ -7,7 +7,7 @@
 package group
 
 import (
-	msg "github.com/wslynn/wechat-gozero/proto/msg"
+	msg "im_message/proto/msg"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"

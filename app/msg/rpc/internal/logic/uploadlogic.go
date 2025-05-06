@@ -3,13 +3,14 @@ package logic
 import (
 	"context"
 
+	"im_message/app/msg/model"
+	"im_message/app/msg/rpc/internal/svc"
+	"im_message/common/xerr"
+	"im_message/common/xmq"
+	"im_message/proto/msg"
+
 	"github.com/jinzhu/copier"
 	"github.com/pkg/errors"
-	"github.com/wslynn/wechat-gozero/app/msg/model"
-	"github.com/wslynn/wechat-gozero/app/msg/rpc/internal/svc"
-	"github.com/wslynn/wechat-gozero/common/xerr"
-	"github.com/wslynn/wechat-gozero/common/xmq"
-	"github.com/wslynn/wechat-gozero/proto/msg"
 
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"

@@ -1,4 +1,4 @@
-module github.com/wslynn/wechat-gozero
+module im_message
 
 go 1.18
 

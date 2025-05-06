@@ -3,10 +3,10 @@ package logic
 import (
 	"context"
 
-	"github.com/wslynn/wechat-gozero/app/msg/api/internal/svc"
-	"github.com/wslynn/wechat-gozero/app/msg/api/internal/types"
-	"github.com/wslynn/wechat-gozero/common/ctxdata"
-	"github.com/wslynn/wechat-gozero/proto/msg"
+	"im_message/app/msg/api/internal/svc"
+	"im_message/app/msg/api/internal/types"
+	"im_message/common/ctxdata"
+	"im_message/proto/msg"
 
 	"github.com/jinzhu/copier"
 	"github.com/zeromicro/go-zero/core/logx"

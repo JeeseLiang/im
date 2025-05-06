@@ -3,11 +3,10 @@ type (
 	RegisterRequest {
 		Email    string `json:"email" validate:"required,email"`
 		Password string `json:"password" validate:"required,min=6,max=16"`
-		NickName string `json:"nickName,optional" validate:"-"`                 // 可选
+		NickName string `json:"nickName,optional" validate:"-"` // 可选
 		Gender   int64  `json:"gender,optional,default=0" validate:"oneof=0 1"` // 默认为0
 	}
-	RegisterResponse {
-	}
+	RegisterResponse  {}
 )
 
 type (
@@ -24,7 +23,10 @@ type (
 
 type (
 	// 个人信息
-	PersonalInfoRequest {
+	PersonalInfoRequest  {}
+	// 查询指定用户信息
+	QueryUserInfoRequest {
+		UserId int64 `json:"userId" validate:"required"`
 	}
 	PersonalInfoResponse {
 		UserId    int64  `json:"userId"`
@@ -37,16 +39,20 @@ type (
 
 service User {
 	@handler Register
-	post /api/user/register(RegisterRequest) returns (RegisterResponse)
-	
+	post /api/user/register (RegisterRequest) returns (RegisterResponse)
+
 	@handler Login
-	post /api/user/login(LoginRequest) returns (LoginResponse)
+	post /api/user/login (LoginRequest) returns (LoginResponse)
 }
 
-@server(
+@server (
 	jwt: JwtAuth
 )
 service User {
 	@handler PersonalInfo
-	post /api/user/personal_info(PersonalInfoRequest) returns (PersonalInfoResponse)
+	post /api/user/personal_info (PersonalInfoRequest) returns (PersonalInfoResponse)
+
+	@handler QueryUserInfo
+	post /api/user/query_user_info (QueryUserInfoRequest) returns (PersonalInfoResponse)
 }
+

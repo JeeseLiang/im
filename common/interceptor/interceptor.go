@@ -3,7 +3,7 @@ package interceptor
 import (
 	"context"
 
-	"github.com/wslynn/wechat-gozero/common/xerr"
+	"im_message/common/xerr"
 
 	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logx"

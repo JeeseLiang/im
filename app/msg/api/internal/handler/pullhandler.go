@@ -3,11 +3,11 @@ package handler
 import (
 	"net/http"
 
-	"github.com/wslynn/wechat-gozero/common/xresp"
+	"im_message/common/xresp"
 
-	"github.com/wslynn/wechat-gozero/app/msg/api/internal/logic"
-	"github.com/wslynn/wechat-gozero/app/msg/api/internal/svc"
-	"github.com/wslynn/wechat-gozero/app/msg/api/internal/types"
+	"im_message/app/msg/api/internal/logic"
+	"im_message/app/msg/api/internal/svc"
+	"im_message/app/msg/api/internal/types"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
 )

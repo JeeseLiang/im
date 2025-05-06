@@ -3,11 +3,11 @@ package logic
 import (
 	"context"
 
-	"github.com/wslynn/wechat-gozero/app/group/api/internal/svc"
-	"github.com/wslynn/wechat-gozero/app/group/api/internal/types"
-	"github.com/wslynn/wechat-gozero/proto/group"
-	"github.com/wslynn/wechat-gozero/common/ctxdata"
-	"github.com/wslynn/wechat-gozero/common/xerr"
+	"im_message/app/group/api/internal/svc"
+	"im_message/app/group/api/internal/types"
+	"im_message/common/ctxdata"
+	"im_message/common/xerr"
+	"im_message/proto/group"
 
 	"github.com/jinzhu/copier"
 	"github.com/zeromicro/go-zero/core/logx"

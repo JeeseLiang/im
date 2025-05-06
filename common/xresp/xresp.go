@@ -3,7 +3,7 @@ package xresp
 import (
 	"net/http"
 
-	"github.com/wslynn/wechat-gozero/common/xerr"
+	"im_message/common/xerr"
 
 	"github.com/go-playground/locales/en"
 	"github.com/go-playground/locales/zh"

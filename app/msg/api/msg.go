@@ -5,12 +5,13 @@ import (
 	"fmt"
 	"net/http"
 
+	"im_message/app/msg/api/internal/config"
+	"im_message/app/msg/api/internal/handler"
+	"im_message/app/msg/api/internal/logic"
+	"im_message/app/msg/api/internal/svc"
+	"im_message/common/xresp"
+
 	"github.com/joho/godotenv"
-	"github.com/wslynn/wechat-gozero/app/msg/api/internal/config"
-	"github.com/wslynn/wechat-gozero/app/msg/api/internal/handler"
-	"github.com/wslynn/wechat-gozero/app/msg/api/internal/logic"
-	"github.com/wslynn/wechat-gozero/app/msg/api/internal/svc"
-	"github.com/wslynn/wechat-gozero/common/xresp"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/logx"
