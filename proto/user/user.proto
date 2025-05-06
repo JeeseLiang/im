@@ -1,6 +1,6 @@
 syntax = "proto3";
 package user;
-option go_package = "im_message/proto/user";
+option go_package = "../user";
 
 // 注册
 message RegisterRequest {
