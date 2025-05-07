@@ -57,3 +57,8 @@ func (s *GroupClientServer) CreateGroupChat(ctx context.Context, in *group.Creat
 	l := logic.NewCreateGroupChatLogic(ctx, s.svcCtx)
 	return l.CreateGroupChat(in)
 }
+
+func (s *GroupClientServer) GetFriendListByUserId(ctx context.Context, in *group.FriendListRequest) (*group.FriendListResponse, error) {
+	l := logic.NewGetFriendListByUserIdLogic(ctx, s.svcCtx)
+	return l.GetFriendListByUserId(in)
+}

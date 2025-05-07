@@ -19,13 +19,14 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	GroupClient_AddFriend_FullMethodName            = "/group.GroupClient/AddFriend"
-	GroupClient_HandleFriend_FullMethodName         = "/group.GroupClient/HandleFriend"
-	GroupClient_GroupUserList_FullMethodName        = "/group.GroupClient/GroupUserList"
-	GroupClient_UserGroupList_FullMethodName        = "/group.GroupClient/UserGroupList"
-	GroupClient_MessageGroupInfoList_FullMethodName = "/group.GroupClient/MessageGroupInfoList"
-	GroupClient_AddGroupChat_FullMethodName         = "/group.GroupClient/AddGroupChat"
-	GroupClient_CreateGroupChat_FullMethodName      = "/group.GroupClient/CreateGroupChat"
+	GroupClient_AddFriend_FullMethodName             = "/group.GroupClient/AddFriend"
+	GroupClient_HandleFriend_FullMethodName          = "/group.GroupClient/HandleFriend"
+	GroupClient_GroupUserList_FullMethodName         = "/group.GroupClient/GroupUserList"
+	GroupClient_UserGroupList_FullMethodName         = "/group.GroupClient/UserGroupList"
+	GroupClient_MessageGroupInfoList_FullMethodName  = "/group.GroupClient/MessageGroupInfoList"
+	GroupClient_AddGroupChat_FullMethodName          = "/group.GroupClient/AddGroupChat"
+	GroupClient_CreateGroupChat_FullMethodName       = "/group.GroupClient/CreateGroupChat"
+	GroupClient_GetFriendListByUserId_FullMethodName = "/group.GroupClient/GetFriendListByUserId"
 )
 
 // GroupClientClient is the client API for GroupClient service.
@@ -39,6 +40,7 @@ type GroupClientClient interface {
 	MessageGroupInfoList(ctx context.Context, in *MessageGroupInfoListRequest, opts ...grpc.CallOption) (*MessageGroupInfoListResponse, error)
 	AddGroupChat(ctx context.Context, in *AddGroupChatRequest, opts ...grpc.CallOption) (*AddGroupChatResponse, error)
 	CreateGroupChat(ctx context.Context, in *CreateGroupChatRequest, opts ...grpc.CallOption) (*CreateGroupChatResponse, error)
+	GetFriendListByUserId(ctx context.Context, in *FriendListRequest, opts ...grpc.CallOption) (*FriendListResponse, error)
 }
 
 type groupClientClient struct {
@@ -119,6 +121,16 @@ func (c *groupClientClient) CreateGroupChat(ctx context.Context, in *CreateGroup
 	return out, nil
 }
 
+func (c *groupClientClient) GetFriendListByUserId(ctx context.Context, in *FriendListRequest, opts ...grpc.CallOption) (*FriendListResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(FriendListResponse)
+	err := c.cc.Invoke(ctx, GroupClient_GetFriendListByUserId_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // GroupClientServer is the server API for GroupClient service.
 // All implementations must embed UnimplementedGroupClientServer
 // for forward compatibility.
@@ -130,6 +142,7 @@ type GroupClientServer interface {
 	MessageGroupInfoList(context.Context, *MessageGroupInfoListRequest) (*MessageGroupInfoListResponse, error)
 	AddGroupChat(context.Context, *AddGroupChatRequest) (*AddGroupChatResponse, error)
 	CreateGroupChat(context.Context, *CreateGroupChatRequest) (*CreateGroupChatResponse, error)
+	GetFriendListByUserId(context.Context, *FriendListRequest) (*FriendListResponse, error)
 	mustEmbedUnimplementedGroupClientServer()
 }
 
@@ -160,6 +173,9 @@ func (UnimplementedGroupClientServer) AddGroupChat(context.Context, *AddGroupCha
 }
 func (UnimplementedGroupClientServer) CreateGroupChat(context.Context, *CreateGroupChatRequest) (*CreateGroupChatResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateGroupChat not implemented")
+}
+func (UnimplementedGroupClientServer) GetFriendListByUserId(context.Context, *FriendListRequest) (*FriendListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetFriendListByUserId not implemented")
 }
 func (UnimplementedGroupClientServer) mustEmbedUnimplementedGroupClientServer() {}
 func (UnimplementedGroupClientServer) testEmbeddedByValue()                     {}
@@ -308,6 +324,24 @@ func _GroupClient_CreateGroupChat_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _GroupClient_GetFriendListByUserId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FriendListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GroupClientServer).GetFriendListByUserId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GroupClient_GetFriendListByUserId_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GroupClientServer).GetFriendListByUserId(ctx, req.(*FriendListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // GroupClient_ServiceDesc is the grpc.ServiceDesc for GroupClient service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -342,6 +376,10 @@ var GroupClient_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateGroupChat",
 			Handler:    _GroupClient_CreateGroupChat_Handler,
+		},
+		{
+			MethodName: "GetFriendListByUserId",
+			Handler:    _GroupClient_GetFriendListByUserId_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

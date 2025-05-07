@@ -25,6 +25,9 @@ func GetGroupId(uid1 int64, uid2 int64) string {
 // 从groupId和其中一个uid, 得到组内另一人的uid
 func GetFriendIdFromGroupId(groupId string, uid int64) (int64, error) {
 	arr := strings.Split(groupId, "_")
+	if len(arr) != 2 {
+		return 0, fmt.Errorf("groupId format error")
+	}
 	uid1_str := strconv.Itoa(int(uid))
 	var uid2_str string
 	if arr[0] == uid1_str {

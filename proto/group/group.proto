@@ -23,6 +23,14 @@ message HandleFriendResponse {
     string groupId=1;
 }
 
+// 获取好友列表
+message FriendListRequest{
+    int64 userId=1;
+}
+message FriendListResponse{
+    repeated int64 list=1;
+}
+
 // 获取群内的用户
 message GroupUserListRequest {
     string groupId=1;
@@ -64,10 +72,10 @@ message CreateGroupChatResponse {
     string groupId=1;
 }
 
-// 为一个群组添加新成员
+// 为一个群组添加批量新成员
 message AddGroupChatRequest{
     int64 fromUid=1;    // 邀请者
-    int64 toUid=2;      // 被邀请者
+    repeated int64 toUid=2;      // 被邀请者
     string groupId=3;   // 群组id
 }
 message AddGroupChatResponse{
@@ -82,4 +90,5 @@ service GroupClient {
     rpc MessageGroupInfoList(MessageGroupInfoListRequest) returns(MessageGroupInfoListResponse);
     rpc AddGroupChat(AddGroupChatRequest) returns(AddGroupChatResponse);
     rpc CreateGroupChat(CreateGroupChatRequest) returns(CreateGroupChatResponse);
+    rpc GetFriendListByUserId(FriendListRequest) returns(FriendListResponse);
 }

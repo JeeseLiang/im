@@ -20,6 +20,8 @@ type (
 	AddGroupChatResponse         = group.AddGroupChatResponse
 	CreateGroupChatRequest       = group.CreateGroupChatRequest
 	CreateGroupChatResponse      = group.CreateGroupChatResponse
+	FriendListRequest            = group.FriendListRequest
+	FriendListResponse           = group.FriendListResponse
 	GroupUserListRequest         = group.GroupUserListRequest
 	GroupUserListResponse        = group.GroupUserListResponse
 	HandleFriendRequest          = group.HandleFriendRequest
@@ -38,6 +40,7 @@ type (
 		MessageGroupInfoList(ctx context.Context, in *MessageGroupInfoListRequest, opts ...grpc.CallOption) (*MessageGroupInfoListResponse, error)
 		AddGroupChat(ctx context.Context, in *AddGroupChatRequest, opts ...grpc.CallOption) (*AddGroupChatResponse, error)
 		CreateGroupChat(ctx context.Context, in *CreateGroupChatRequest, opts ...grpc.CallOption) (*CreateGroupChatResponse, error)
+		GetFriendListByUserId(ctx context.Context, in *FriendListRequest, opts ...grpc.CallOption) (*FriendListResponse, error)
 	}
 
 	defaultGroupClient struct {
@@ -84,4 +87,9 @@ func (m *defaultGroupClient) AddGroupChat(ctx context.Context, in *AddGroupChatR
 func (m *defaultGroupClient) CreateGroupChat(ctx context.Context, in *CreateGroupChatRequest, opts ...grpc.CallOption) (*CreateGroupChatResponse, error) {
 	client := group.NewGroupClientClient(m.cli.Conn())
 	return client.CreateGroupChat(ctx, in, opts...)
+}
+
+func (m *defaultGroupClient) GetFriendListByUserId(ctx context.Context, in *FriendListRequest, opts ...grpc.CallOption) (*FriendListResponse, error) {
+	client := group.NewGroupClientClient(m.cli.Conn())
+	return client.GetFriendListByUserId(ctx, in, opts...)
 }

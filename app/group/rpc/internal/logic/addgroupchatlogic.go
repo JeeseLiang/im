@@ -23,8 +23,10 @@ func NewAddGroupChatLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AddG
 	}
 }
 
+// 添加群组成员(是好友则无需同意，不是好友无法邀请)
 func (l *AddGroupChatLogic) AddGroupChat(in *group.AddGroupChatRequest) (*group.AddGroupChatResponse, error) {
-	// todo: add your logic here and delete this line
-
+	// 1. 查询FromUid的好友列表
+	// 2. 筛选出可以被添加的ToUid
+	// 3. 添加群成员
 	return &group.AddGroupChatResponse{}, nil
 }
