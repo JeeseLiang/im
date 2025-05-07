@@ -79,7 +79,7 @@ message AddGroupChatRequest{
     string groupId=3;   // 群组id
 }
 message AddGroupChatResponse{
-    string groupId=1; // 发起邀请成功返回id，否则为空
+    int64 cnt=1; // 返回成功邀请的人数
 }
 
 service GroupClient {
