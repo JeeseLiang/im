@@ -3,8 +3,7 @@ type (
 	AddFriendRequest {
 		UserId int64 `json:"user_id"`
 	}
-	AddFriendResponse {
-	}
+	AddFriendResponse  {}
 )
 
 type (
@@ -30,8 +29,7 @@ type (
 
 type (
 	// 获取消息页 群组信息列表
-	MessageGroupInfoListRequest {
-	}
+	MessageGroupInfoListRequest  {}
 	ChatMsg {
 		Id         int64  `json:"id"`
 		GroupId    string `json:"groupId"`
@@ -52,19 +50,47 @@ type (
 	}
 )
 
-@server(
+type (
+	// 创建群聊
+	CreateGroupChatRequest {
+		GroupName string `json:"groupName"`
+	}
+	CreateGroupChatResponse {
+		GroupId string `json:"groupId"`
+	}
+)
+
+type (
+	// 添加群聊成员
+	AddGroupChatRequest {
+		ToUid   []int64 `json:"toUid"`
+		GroupId string  `json:"groupId"`
+	}
+	AddGroupChatResponse {
+		Cnt int64 `json:"cnt"`
+	}
+)
+
+@server (
 	jwt: JwtAuth
 )
 service Group {
 	@handler AddFriend
-	post /api/group/add_friend(AddFriendRequest) returns(AddFriendResponse)
-	
+	post /api/group/add_friend (AddFriendRequest) returns (AddFriendResponse)
+
 	@handler HandleFriend
-	post /api/group/handle_friend(HandleFriendRequest) returns(HandleFriendResponse)
-	
+	post /api/group/handle_friend (HandleFriendRequest) returns (HandleFriendResponse)
+
 	@handler GroupUesrList
-	post /api/group/group_user_list(GroupUserListRequest) returns(GroupUserListResponse)
-	
+	post /api/group/group_user_list (GroupUserListRequest) returns (GroupUserListResponse)
+
 	@handler MessageGroupInfoList
-	post /api/group/message_group_info_list(MessageGroupInfoListRequest) returns(MessageGroupInfoListResponse)
+	post /api/group/message_group_info_list (MessageGroupInfoListRequest) returns (MessageGroupInfoListResponse)
+
+	@handler CreateGroupChat
+	post /api/group/create_group_chat (CreateGroupChatRequest) returns (CreateGroupChatResponse)
+
+	@handler AddGroupChat
+	post /api/group/add_group_chat (AddGroupChatRequest) returns (AddGroupChatResponse)
 }
+
