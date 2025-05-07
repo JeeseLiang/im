@@ -54,13 +54,23 @@ message MessageGroupInfoListResponse {
 }
 
 // 群组服务
-// 在单聊的基础上邀请用户加入群组, 成为群聊
-message GroupChatRequest{
+
+// 群组创建
+message CreateGroupChatRequest {
+    int64 userId=1;
+    string groupName=2;
+}
+message CreateGroupChatResponse {
+    string groupId=1;
+}
+
+// 为一个群组添加新成员
+message AddGroupChatRequest{
     int64 fromUid=1;    // 邀请者
     int64 toUid=2;      // 被邀请者
     string groupId=3;   // 群组id
 }
-message GroupChatResponse{
+message AddGroupChatResponse{
     string groupId=1; // 发起邀请成功返回id，否则为空
 }
 
@@ -70,5 +80,6 @@ service GroupClient {
     rpc GroupUserList(GroupUserListRequest) returns(GroupUserListResponse);
     rpc UserGroupList(UserGroupListRequest) returns(UserGroupListResponse);
     rpc MessageGroupInfoList(MessageGroupInfoListRequest) returns(MessageGroupInfoListResponse);
-    rpc GroupChat(GroupChatRequest) returns(GroupChatResponse);
+    rpc AddGroupChat(AddGroupChatRequest) returns(AddGroupChatResponse);
+    rpc CreateGroupChat(CreateGroupChatRequest) returns(CreateGroupChatResponse);
 }

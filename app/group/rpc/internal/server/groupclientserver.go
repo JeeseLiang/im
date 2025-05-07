@@ -48,7 +48,12 @@ func (s *GroupClientServer) MessageGroupInfoList(ctx context.Context, in *group.
 	return l.MessageGroupInfoList(in)
 }
 
-func (s *GroupClientServer) GroupChat(ctx context.Context, in *group.GroupChatRequest) (*group.GroupChatResponse, error) {
-	l := logic.NewGroupChatLogic(ctx, s.svcCtx)
-	return l.GroupChat(in)
+func (s *GroupClientServer) AddGroupChat(ctx context.Context, in *group.AddGroupChatRequest) (*group.AddGroupChatResponse, error) {
+	l := logic.NewAddGroupChatLogic(ctx, s.svcCtx)
+	return l.AddGroupChat(in)
+}
+
+func (s *GroupClientServer) CreateGroupChat(ctx context.Context, in *group.CreateGroupChatRequest) (*group.CreateGroupChatResponse, error) {
+	l := logic.NewCreateGroupChatLogic(ctx, s.svcCtx)
+	return l.CreateGroupChat(in)
 }

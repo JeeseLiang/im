@@ -24,7 +24,8 @@ const (
 	GroupClient_GroupUserList_FullMethodName        = "/group.GroupClient/GroupUserList"
 	GroupClient_UserGroupList_FullMethodName        = "/group.GroupClient/UserGroupList"
 	GroupClient_MessageGroupInfoList_FullMethodName = "/group.GroupClient/MessageGroupInfoList"
-	GroupClient_GroupChat_FullMethodName            = "/group.GroupClient/GroupChat"
+	GroupClient_AddGroupChat_FullMethodName         = "/group.GroupClient/AddGroupChat"
+	GroupClient_CreateGroupChat_FullMethodName      = "/group.GroupClient/CreateGroupChat"
 )
 
 // GroupClientClient is the client API for GroupClient service.
@@ -36,7 +37,8 @@ type GroupClientClient interface {
 	GroupUserList(ctx context.Context, in *GroupUserListRequest, opts ...grpc.CallOption) (*GroupUserListResponse, error)
 	UserGroupList(ctx context.Context, in *UserGroupListRequest, opts ...grpc.CallOption) (*UserGroupListResponse, error)
 	MessageGroupInfoList(ctx context.Context, in *MessageGroupInfoListRequest, opts ...grpc.CallOption) (*MessageGroupInfoListResponse, error)
-	GroupChat(ctx context.Context, in *GroupChatRequest, opts ...grpc.CallOption) (*GroupChatResponse, error)
+	AddGroupChat(ctx context.Context, in *AddGroupChatRequest, opts ...grpc.CallOption) (*AddGroupChatResponse, error)
+	CreateGroupChat(ctx context.Context, in *CreateGroupChatRequest, opts ...grpc.CallOption) (*CreateGroupChatResponse, error)
 }
 
 type groupClientClient struct {
@@ -97,10 +99,20 @@ func (c *groupClientClient) MessageGroupInfoList(ctx context.Context, in *Messag
 	return out, nil
 }
 
-func (c *groupClientClient) GroupChat(ctx context.Context, in *GroupChatRequest, opts ...grpc.CallOption) (*GroupChatResponse, error) {
+func (c *groupClientClient) AddGroupChat(ctx context.Context, in *AddGroupChatRequest, opts ...grpc.CallOption) (*AddGroupChatResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GroupChatResponse)
-	err := c.cc.Invoke(ctx, GroupClient_GroupChat_FullMethodName, in, out, cOpts...)
+	out := new(AddGroupChatResponse)
+	err := c.cc.Invoke(ctx, GroupClient_AddGroupChat_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *groupClientClient) CreateGroupChat(ctx context.Context, in *CreateGroupChatRequest, opts ...grpc.CallOption) (*CreateGroupChatResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateGroupChatResponse)
+	err := c.cc.Invoke(ctx, GroupClient_CreateGroupChat_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -116,7 +128,8 @@ type GroupClientServer interface {
 	GroupUserList(context.Context, *GroupUserListRequest) (*GroupUserListResponse, error)
 	UserGroupList(context.Context, *UserGroupListRequest) (*UserGroupListResponse, error)
 	MessageGroupInfoList(context.Context, *MessageGroupInfoListRequest) (*MessageGroupInfoListResponse, error)
-	GroupChat(context.Context, *GroupChatRequest) (*GroupChatResponse, error)
+	AddGroupChat(context.Context, *AddGroupChatRequest) (*AddGroupChatResponse, error)
+	CreateGroupChat(context.Context, *CreateGroupChatRequest) (*CreateGroupChatResponse, error)
 	mustEmbedUnimplementedGroupClientServer()
 }
 
@@ -142,8 +155,11 @@ func (UnimplementedGroupClientServer) UserGroupList(context.Context, *UserGroupL
 func (UnimplementedGroupClientServer) MessageGroupInfoList(context.Context, *MessageGroupInfoListRequest) (*MessageGroupInfoListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MessageGroupInfoList not implemented")
 }
-func (UnimplementedGroupClientServer) GroupChat(context.Context, *GroupChatRequest) (*GroupChatResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GroupChat not implemented")
+func (UnimplementedGroupClientServer) AddGroupChat(context.Context, *AddGroupChatRequest) (*AddGroupChatResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddGroupChat not implemented")
+}
+func (UnimplementedGroupClientServer) CreateGroupChat(context.Context, *CreateGroupChatRequest) (*CreateGroupChatResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateGroupChat not implemented")
 }
 func (UnimplementedGroupClientServer) mustEmbedUnimplementedGroupClientServer() {}
 func (UnimplementedGroupClientServer) testEmbeddedByValue()                     {}
@@ -256,20 +272,38 @@ func _GroupClient_MessageGroupInfoList_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
-func _GroupClient_GroupChat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GroupChatRequest)
+func _GroupClient_AddGroupChat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddGroupChatRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(GroupClientServer).GroupChat(ctx, in)
+		return srv.(GroupClientServer).AddGroupChat(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: GroupClient_GroupChat_FullMethodName,
+		FullMethod: GroupClient_AddGroupChat_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GroupClientServer).GroupChat(ctx, req.(*GroupChatRequest))
+		return srv.(GroupClientServer).AddGroupChat(ctx, req.(*AddGroupChatRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _GroupClient_CreateGroupChat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateGroupChatRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GroupClientServer).CreateGroupChat(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GroupClient_CreateGroupChat_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GroupClientServer).CreateGroupChat(ctx, req.(*CreateGroupChatRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -302,8 +336,12 @@ var GroupClient_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _GroupClient_MessageGroupInfoList_Handler,
 		},
 		{
-			MethodName: "GroupChat",
-			Handler:    _GroupClient_GroupChat_Handler,
+			MethodName: "AddGroupChat",
+			Handler:    _GroupClient_AddGroupChat_Handler,
+		},
+		{
+			MethodName: "CreateGroupChat",
+			Handler:    _GroupClient_CreateGroupChat_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -23,6 +23,7 @@ type (
 		FindGroupIdListByUserId(ctx context.Context, userId int64) ([]string, error)
 		FindAliasNameByGroupAndUser(ctx context.Context, groupId string, userId int64) (string, error)
 		TransInsertSystemGroupUser(ctx context.Context, session sqlx.Session, userId int64) (sql.Result, error)
+		TransInsertGroupUser(ctx context.Context, session sqlx.Session, userId int64, groupId string) (sql.Result, error)
 	}
 
 	customGroupUserModel struct {
@@ -35,6 +36,15 @@ func NewGroupUserModel(conn sqlx.SqlConn, c cache.CacheConf) GroupUserModel {
 	return &customGroupUserModel{
 		defaultGroupUserModel: newGroupUserModel(conn, c),
 	}
+}
+
+func (m *defaultGroupUserModel) TransInsertGroupUser(ctx context.Context, session sqlx.Session, userId int64, groupId string) (sql.Result, error) {
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?)", m.table, groupUserRowsExpectAutoSet)
+	ret, err := session.ExecCtx(ctx, query, groupId, userId, "")
+	if err != nil {
+		return nil, err
+	}
+	return ret, err
 }
 
 func (m *defaultGroupUserModel) FindUserListByGroupId(ctx context.Context, groupId string) ([]*GroupUser, error) {

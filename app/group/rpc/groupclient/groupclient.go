@@ -16,8 +16,10 @@ import (
 type (
 	AddFriendRequest             = group.AddFriendRequest
 	AddFriendResponse            = group.AddFriendResponse
-	GroupChatRequest             = group.GroupChatRequest
-	GroupChatResponse            = group.GroupChatResponse
+	AddGroupChatRequest          = group.AddGroupChatRequest
+	AddGroupChatResponse         = group.AddGroupChatResponse
+	CreateGroupChatRequest       = group.CreateGroupChatRequest
+	CreateGroupChatResponse      = group.CreateGroupChatResponse
 	GroupUserListRequest         = group.GroupUserListRequest
 	GroupUserListResponse        = group.GroupUserListResponse
 	HandleFriendRequest          = group.HandleFriendRequest
@@ -34,7 +36,8 @@ type (
 		GroupUserList(ctx context.Context, in *GroupUserListRequest, opts ...grpc.CallOption) (*GroupUserListResponse, error)
 		UserGroupList(ctx context.Context, in *UserGroupListRequest, opts ...grpc.CallOption) (*UserGroupListResponse, error)
 		MessageGroupInfoList(ctx context.Context, in *MessageGroupInfoListRequest, opts ...grpc.CallOption) (*MessageGroupInfoListResponse, error)
-		GroupChat(ctx context.Context, in *GroupChatRequest, opts ...grpc.CallOption) (*GroupChatResponse, error)
+		AddGroupChat(ctx context.Context, in *AddGroupChatRequest, opts ...grpc.CallOption) (*AddGroupChatResponse, error)
+		CreateGroupChat(ctx context.Context, in *CreateGroupChatRequest, opts ...grpc.CallOption) (*CreateGroupChatResponse, error)
 	}
 
 	defaultGroupClient struct {
@@ -73,7 +76,12 @@ func (m *defaultGroupClient) MessageGroupInfoList(ctx context.Context, in *Messa
 	return client.MessageGroupInfoList(ctx, in, opts...)
 }
 
-func (m *defaultGroupClient) GroupChat(ctx context.Context, in *GroupChatRequest, opts ...grpc.CallOption) (*GroupChatResponse, error) {
+func (m *defaultGroupClient) AddGroupChat(ctx context.Context, in *AddGroupChatRequest, opts ...grpc.CallOption) (*AddGroupChatResponse, error) {
 	client := group.NewGroupClientClient(m.cli.Conn())
-	return client.GroupChat(ctx, in, opts...)
+	return client.AddGroupChat(ctx, in, opts...)
+}
+
+func (m *defaultGroupClient) CreateGroupChat(ctx context.Context, in *CreateGroupChatRequest, opts ...grpc.CallOption) (*CreateGroupChatResponse, error) {
+	client := group.NewGroupClientClient(m.cli.Conn())
+	return client.CreateGroupChat(ctx, in, opts...)
 }

@@ -19,6 +19,7 @@ type (
 	GroupModel interface {
 		groupModel
 		TransInsertSystemGroup(ctx context.Context, session sqlx.Session, userId int64) (sql.Result, error)
+		CreateGroup(ctx context.Context, session sqlx.Session, userId int64, groupName string) (string, error)
 	}
 
 	customGroupModel struct {
@@ -31,6 +32,17 @@ func NewGroupModel(conn sqlx.SqlConn, c cache.CacheConf) GroupModel {
 	return &customGroupModel{
 		defaultGroupModel: newGroupModel(conn, c),
 	}
+}
+
+func (m *defaultGroupModel) CreateGroup(ctx context.Context, session sqlx.Session, userId int64, groupName string) (string, error) {
+	// 创建群聊群组
+	group_id := biz.GetUuid()
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?)", m.table, groupRowsExpectAutoSet)
+	_, err := session.ExecCtx(ctx, query, group_id, groupName, GroupTypeMulti, GroupStatusYes, nil)
+	if err != nil {
+		return "", err
+	}
+	return group_id, nil
 }
 
 // 添加系统用户 组
