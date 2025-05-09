@@ -13,6 +13,16 @@ type LoginResponse struct {
 	AccessExpire int64  `json:"accessExpire"`
 }
 
+type ModifyPersonalInfoRequest struct {
+	NickName  string `json:"nickName,optional" validate:"-"`                 // 可选
+	Gender    int64  `json:"gender,optional,default=0" validate:"oneof=0 1"` // 默认为0
+	AvatarUrl string `json:"avatarUrl,optional" validate:"url"`              // 可选
+}
+
+type ModifyPersonalInfoResponse struct {
+	Success bool `json:"success"`
+}
+
 type PersonalInfoRequest struct {
 }
 

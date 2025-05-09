@@ -49,6 +49,18 @@ type (
 	}
 )
 
+type (
+	// 修改个人信息
+	ModifyPersonalInfoRequest {
+		NickName  string `json:"nickName,optional" validate:"-"` // 可选
+		Gender    int64  `json:"gender,optional,default=0" validate:"oneof=0 1"` // 默认为0
+		AvatarUrl string `json:"avatarUrl,optional" validate:"url"` // 可选
+	}
+	ModifyPersonalInfoResponse {
+		Success bool `json:"success"`
+	}
+)
+
 service User {
 	@handler Register
 	post /api/user/register (RegisterRequest) returns (RegisterResponse)
@@ -69,5 +81,8 @@ service User {
 
 	@handler ResetPassword
 	post /api/user/reset_password (ResetPasswordRequest) returns (ResetPasswordResponse)
+
+	@handler ModifyPersonalInfo
+	post /api/user/modify_personal_info (ModifyPersonalInfoRequest) returns (ModifyPersonalInfoResponse)
 }
 

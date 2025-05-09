@@ -52,3 +52,8 @@ func (s *UserClientServer) GetOnlineStatus(ctx context.Context, in *user.GetOnli
 	l := logic.NewGetOnlineStatusLogic(ctx, s.svcCtx)
 	return l.GetOnlineStatus(in)
 }
+
+func (s *UserClientServer) ModifyUserInfo(ctx context.Context, in *user.ModifyUserInfoRequest) (*user.ModifyUserInfoResponse, error) {
+	l := logic.NewModifyUserInfoLogic(ctx, s.svcCtx)
+	return l.ModifyUserInfo(in)
+}

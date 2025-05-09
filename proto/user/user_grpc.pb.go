@@ -25,6 +25,7 @@ const (
 	UserClient_ResetPassword_FullMethodName      = "/user.UserClient/ResetPassword"
 	UserClient_UpdateOnlineStatus_FullMethodName = "/user.UserClient/UpdateOnlineStatus"
 	UserClient_GetOnlineStatus_FullMethodName    = "/user.UserClient/GetOnlineStatus"
+	UserClient_ModifyUserInfo_FullMethodName     = "/user.UserClient/ModifyUserInfo"
 )
 
 // UserClientClient is the client API for UserClient service.
@@ -37,6 +38,7 @@ type UserClientClient interface {
 	ResetPassword(ctx context.Context, in *ResetPasswordRequest, opts ...grpc.CallOption) (*ResetPasswordResponse, error)
 	UpdateOnlineStatus(ctx context.Context, in *UpdateOnlineStatusRequest, opts ...grpc.CallOption) (*UpdateOnlineStatusResponse, error)
 	GetOnlineStatus(ctx context.Context, in *GetOnlineStatusRequest, opts ...grpc.CallOption) (*GetOnlineStatusResponse, error)
+	ModifyUserInfo(ctx context.Context, in *ModifyUserInfoRequest, opts ...grpc.CallOption) (*ModifyUserInfoResponse, error)
 }
 
 type userClientClient struct {
@@ -107,6 +109,16 @@ func (c *userClientClient) GetOnlineStatus(ctx context.Context, in *GetOnlineSta
 	return out, nil
 }
 
+func (c *userClientClient) ModifyUserInfo(ctx context.Context, in *ModifyUserInfoRequest, opts ...grpc.CallOption) (*ModifyUserInfoResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ModifyUserInfoResponse)
+	err := c.cc.Invoke(ctx, UserClient_ModifyUserInfo_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserClientServer is the server API for UserClient service.
 // All implementations must embed UnimplementedUserClientServer
 // for forward compatibility.
@@ -117,6 +129,7 @@ type UserClientServer interface {
 	ResetPassword(context.Context, *ResetPasswordRequest) (*ResetPasswordResponse, error)
 	UpdateOnlineStatus(context.Context, *UpdateOnlineStatusRequest) (*UpdateOnlineStatusResponse, error)
 	GetOnlineStatus(context.Context, *GetOnlineStatusRequest) (*GetOnlineStatusResponse, error)
+	ModifyUserInfo(context.Context, *ModifyUserInfoRequest) (*ModifyUserInfoResponse, error)
 	mustEmbedUnimplementedUserClientServer()
 }
 
@@ -144,6 +157,9 @@ func (UnimplementedUserClientServer) UpdateOnlineStatus(context.Context, *Update
 }
 func (UnimplementedUserClientServer) GetOnlineStatus(context.Context, *GetOnlineStatusRequest) (*GetOnlineStatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetOnlineStatus not implemented")
+}
+func (UnimplementedUserClientServer) ModifyUserInfo(context.Context, *ModifyUserInfoRequest) (*ModifyUserInfoResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ModifyUserInfo not implemented")
 }
 func (UnimplementedUserClientServer) mustEmbedUnimplementedUserClientServer() {}
 func (UnimplementedUserClientServer) testEmbeddedByValue()                    {}
@@ -274,6 +290,24 @@ func _UserClient_GetOnlineStatus_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserClient_ModifyUserInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ModifyUserInfoRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserClientServer).ModifyUserInfo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserClient_ModifyUserInfo_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserClientServer).ModifyUserInfo(ctx, req.(*ModifyUserInfoRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserClient_ServiceDesc is the grpc.ServiceDesc for UserClient service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -304,6 +338,10 @@ var UserClient_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetOnlineStatus",
 			Handler:    _UserClient_GetOnlineStatus_Handler,
+		},
+		{
+			MethodName: "ModifyUserInfo",
+			Handler:    _UserClient_ModifyUserInfo_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

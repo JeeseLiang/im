@@ -18,6 +18,8 @@ type (
 	GetOnlineStatusResponse    = user.GetOnlineStatusResponse
 	LoginRequest               = user.LoginRequest
 	LoginResponse              = user.LoginResponse
+	ModifyUserInfoRequest      = user.ModifyUserInfoRequest
+	ModifyUserInfoResponse     = user.ModifyUserInfoResponse
 	PersonalInfoRequest        = user.PersonalInfoRequest
 	PersonalInfoResponse       = user.PersonalInfoResponse
 	RegisterRequest            = user.RegisterRequest
@@ -34,6 +36,7 @@ type (
 		ResetPassword(ctx context.Context, in *ResetPasswordRequest, opts ...grpc.CallOption) (*ResetPasswordResponse, error)
 		UpdateOnlineStatus(ctx context.Context, in *UpdateOnlineStatusRequest, opts ...grpc.CallOption) (*UpdateOnlineStatusResponse, error)
 		GetOnlineStatus(ctx context.Context, in *GetOnlineStatusRequest, opts ...grpc.CallOption) (*GetOnlineStatusResponse, error)
+		ModifyUserInfo(ctx context.Context, in *ModifyUserInfoRequest, opts ...grpc.CallOption) (*ModifyUserInfoResponse, error)
 	}
 
 	defaultUserClient struct {
@@ -75,4 +78,9 @@ func (m *defaultUserClient) UpdateOnlineStatus(ctx context.Context, in *UpdateOn
 func (m *defaultUserClient) GetOnlineStatus(ctx context.Context, in *GetOnlineStatusRequest, opts ...grpc.CallOption) (*GetOnlineStatusResponse, error) {
 	client := user.NewUserClientClient(m.cli.Conn())
 	return client.GetOnlineStatus(ctx, in, opts...)
+}
+
+func (m *defaultUserClient) ModifyUserInfo(ctx context.Context, in *ModifyUserInfoRequest, opts ...grpc.CallOption) (*ModifyUserInfoResponse, error) {
+	client := user.NewUserClientClient(m.cli.Conn())
+	return client.ModifyUserInfo(ctx, in, opts...)
 }

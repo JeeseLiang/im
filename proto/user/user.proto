@@ -61,6 +61,16 @@ message GetOnlineStatusResponse {
     int64 lastOnlineTime = 2;
 }
 
+// 修改用户信息
+message ModifyUserInfoRequest {
+    int64 userId = 1;
+    string nickName = 2;
+    int64 gender = 3;
+    string avatarUrl = 4;
+}
+message ModifyUserInfoResponse {
+    bool success = 1;
+}
 
 service UserClient {
     rpc Login(LoginRequest) returns(LoginResponse);
@@ -69,4 +79,5 @@ service UserClient {
     rpc ResetPassword(ResetPasswordRequest) returns(ResetPasswordResponse);
     rpc UpdateOnlineStatus(UpdateOnlineStatusRequest) returns(UpdateOnlineStatusResponse);
     rpc GetOnlineStatus(GetOnlineStatusRequest) returns(GetOnlineStatusResponse);
+    rpc ModifyUserInfo(ModifyUserInfoRequest) returns(ModifyUserInfoResponse);
 }
