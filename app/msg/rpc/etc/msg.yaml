@@ -23,4 +23,4 @@ MqConf:
     Brokers:
         - ${SERVER_IP}:9093
         - ${SERVER_IP}:9094
-    Topic: im_message
+    Topic: msg_chat

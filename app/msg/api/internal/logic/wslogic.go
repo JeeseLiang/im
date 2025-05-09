@@ -91,11 +91,12 @@ func (g *Group) Run() {
 		case client := <-g.onEnter: // 刚刚上线
 			fmt.Printf("group handle onEnter, client:%+v\n", client)
 			g.onlineClients[client] = true
-
+			logx.Infof("用户加入群组, groupId:%s, clientId:%s", g.id, client.idPlatform)
 		case client := <-g.onLeave: // 刚刚离线
 			delete(g.onlineClients, client)
-
+			logx.Infof("用户离开群组, groupId:%s, clientId:%s", g.id, client.idPlatform)
 		case message := <-g.broadcast: // 有新消息上传
+			logx.Infof("群组收到新消息, groupId:%s, message:%s", g.id, string(message))
 			for client := range g.onlineClients {
 				select {
 				case client.onSend <- message:
