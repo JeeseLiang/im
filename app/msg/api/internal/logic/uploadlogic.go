@@ -5,6 +5,7 @@ import (
 
 	"im_message/app/msg/api/internal/svc"
 	"im_message/app/msg/api/internal/types"
+	"im_message/common/biz"
 	"im_message/common/ctxdata"
 	"im_message/proto/msg"
 
@@ -32,6 +33,11 @@ func (l *UploadLogic) Upload(req *types.UploadRequest) (*types.UploadResponse, e
 	if err != nil {
 		return nil, err
 	}
+
+	if pbUploadRequest.Uuid == "" {
+		pbUploadRequest.Uuid = biz.GetUuid()
+	}
+
 	userId := ctxdata.GetUidFromCtx(l.ctx)
 	pbUploadRequest.SenderId = userId
 	pbUploadResponse, err := l.svcCtx.MsgRpc.Upload(l.ctx, &pbUploadRequest)

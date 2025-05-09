@@ -4,7 +4,7 @@ type (
 		GroupId string `json:"groupId"`
 		Type    int64  `json:"type"`
 		Content string `json:"content"`
-		Uuid    string `json:"uuid"`
+		Uuid    string `json:"uuid,omitempty"`
 	}
 	UploadResponse {
 		Id         int64 `json:"id"`
@@ -33,14 +33,14 @@ type (
 	}
 )
 
-@server(
+@server (
 	jwt: JwtAuth
 )
-service Message {
+service msg {
 	@handler upload
-	post /api/message/upload(UploadRequest) returns (UploadResponse)
-	
+	post /api/message/upload (UploadRequest) returns (UploadResponse)
+
 	@handler pull
-	post /api/message/pull(PullRequest) returns (PullResponse)
-	
+	post /api/message/pull (PullRequest) returns (PullResponse)
 }
+
