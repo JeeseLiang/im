@@ -14,17 +14,26 @@ import (
 )
 
 type (
-	LoginRequest         = user.LoginRequest
-	LoginResponse        = user.LoginResponse
-	PersonalInfoRequest  = user.PersonalInfoRequest
-	PersonalInfoResponse = user.PersonalInfoResponse
-	RegisterRequest      = user.RegisterRequest
-	RegisterResponse     = user.RegisterResponse
+	GetOnlineStatusRequest     = user.GetOnlineStatusRequest
+	GetOnlineStatusResponse    = user.GetOnlineStatusResponse
+	LoginRequest               = user.LoginRequest
+	LoginResponse              = user.LoginResponse
+	PersonalInfoRequest        = user.PersonalInfoRequest
+	PersonalInfoResponse       = user.PersonalInfoResponse
+	RegisterRequest            = user.RegisterRequest
+	RegisterResponse           = user.RegisterResponse
+	ResetPasswordRequest       = user.ResetPasswordRequest
+	ResetPasswordResponse      = user.ResetPasswordResponse
+	UpdateOnlineStatusRequest  = user.UpdateOnlineStatusRequest
+	UpdateOnlineStatusResponse = user.UpdateOnlineStatusResponse
 
 	UserClient interface {
 		Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 		Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
 		PersonalInfo(ctx context.Context, in *PersonalInfoRequest, opts ...grpc.CallOption) (*PersonalInfoResponse, error)
+		ResetPassword(ctx context.Context, in *ResetPasswordRequest, opts ...grpc.CallOption) (*ResetPasswordResponse, error)
+		UpdateOnlineStatus(ctx context.Context, in *UpdateOnlineStatusRequest, opts ...grpc.CallOption) (*UpdateOnlineStatusResponse, error)
+		GetOnlineStatus(ctx context.Context, in *GetOnlineStatusRequest, opts ...grpc.CallOption) (*GetOnlineStatusResponse, error)
 	}
 
 	defaultUserClient struct {
@@ -51,4 +60,19 @@ func (m *defaultUserClient) Register(ctx context.Context, in *RegisterRequest, o
 func (m *defaultUserClient) PersonalInfo(ctx context.Context, in *PersonalInfoRequest, opts ...grpc.CallOption) (*PersonalInfoResponse, error) {
 	client := user.NewUserClientClient(m.cli.Conn())
 	return client.PersonalInfo(ctx, in, opts...)
+}
+
+func (m *defaultUserClient) ResetPassword(ctx context.Context, in *ResetPasswordRequest, opts ...grpc.CallOption) (*ResetPasswordResponse, error) {
+	client := user.NewUserClientClient(m.cli.Conn())
+	return client.ResetPassword(ctx, in, opts...)
+}
+
+func (m *defaultUserClient) UpdateOnlineStatus(ctx context.Context, in *UpdateOnlineStatusRequest, opts ...grpc.CallOption) (*UpdateOnlineStatusResponse, error) {
+	client := user.NewUserClientClient(m.cli.Conn())
+	return client.UpdateOnlineStatus(ctx, in, opts...)
+}
+
+func (m *defaultUserClient) GetOnlineStatus(ctx context.Context, in *GetOnlineStatusRequest, opts ...grpc.CallOption) (*GetOnlineStatusResponse, error) {
+	client := user.NewUserClientClient(m.cli.Conn())
+	return client.GetOnlineStatus(ctx, in, opts...)
 }

@@ -19,9 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	UserClient_Login_FullMethodName        = "/user.UserClient/Login"
-	UserClient_Register_FullMethodName     = "/user.UserClient/Register"
-	UserClient_PersonalInfo_FullMethodName = "/user.UserClient/PersonalInfo"
+	UserClient_Login_FullMethodName              = "/user.UserClient/Login"
+	UserClient_Register_FullMethodName           = "/user.UserClient/Register"
+	UserClient_PersonalInfo_FullMethodName       = "/user.UserClient/PersonalInfo"
+	UserClient_ResetPassword_FullMethodName      = "/user.UserClient/ResetPassword"
+	UserClient_UpdateOnlineStatus_FullMethodName = "/user.UserClient/UpdateOnlineStatus"
+	UserClient_GetOnlineStatus_FullMethodName    = "/user.UserClient/GetOnlineStatus"
 )
 
 // UserClientClient is the client API for UserClient service.
@@ -31,6 +34,9 @@ type UserClientClient interface {
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
 	PersonalInfo(ctx context.Context, in *PersonalInfoRequest, opts ...grpc.CallOption) (*PersonalInfoResponse, error)
+	ResetPassword(ctx context.Context, in *ResetPasswordRequest, opts ...grpc.CallOption) (*ResetPasswordResponse, error)
+	UpdateOnlineStatus(ctx context.Context, in *UpdateOnlineStatusRequest, opts ...grpc.CallOption) (*UpdateOnlineStatusResponse, error)
+	GetOnlineStatus(ctx context.Context, in *GetOnlineStatusRequest, opts ...grpc.CallOption) (*GetOnlineStatusResponse, error)
 }
 
 type userClientClient struct {
@@ -71,6 +77,36 @@ func (c *userClientClient) PersonalInfo(ctx context.Context, in *PersonalInfoReq
 	return out, nil
 }
 
+func (c *userClientClient) ResetPassword(ctx context.Context, in *ResetPasswordRequest, opts ...grpc.CallOption) (*ResetPasswordResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ResetPasswordResponse)
+	err := c.cc.Invoke(ctx, UserClient_ResetPassword_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClientClient) UpdateOnlineStatus(ctx context.Context, in *UpdateOnlineStatusRequest, opts ...grpc.CallOption) (*UpdateOnlineStatusResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateOnlineStatusResponse)
+	err := c.cc.Invoke(ctx, UserClient_UpdateOnlineStatus_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClientClient) GetOnlineStatus(ctx context.Context, in *GetOnlineStatusRequest, opts ...grpc.CallOption) (*GetOnlineStatusResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetOnlineStatusResponse)
+	err := c.cc.Invoke(ctx, UserClient_GetOnlineStatus_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserClientServer is the server API for UserClient service.
 // All implementations must embed UnimplementedUserClientServer
 // for forward compatibility.
@@ -78,6 +114,9 @@ type UserClientServer interface {
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
 	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
 	PersonalInfo(context.Context, *PersonalInfoRequest) (*PersonalInfoResponse, error)
+	ResetPassword(context.Context, *ResetPasswordRequest) (*ResetPasswordResponse, error)
+	UpdateOnlineStatus(context.Context, *UpdateOnlineStatusRequest) (*UpdateOnlineStatusResponse, error)
+	GetOnlineStatus(context.Context, *GetOnlineStatusRequest) (*GetOnlineStatusResponse, error)
 	mustEmbedUnimplementedUserClientServer()
 }
 
@@ -96,6 +135,15 @@ func (UnimplementedUserClientServer) Register(context.Context, *RegisterRequest)
 }
 func (UnimplementedUserClientServer) PersonalInfo(context.Context, *PersonalInfoRequest) (*PersonalInfoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PersonalInfo not implemented")
+}
+func (UnimplementedUserClientServer) ResetPassword(context.Context, *ResetPasswordRequest) (*ResetPasswordResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ResetPassword not implemented")
+}
+func (UnimplementedUserClientServer) UpdateOnlineStatus(context.Context, *UpdateOnlineStatusRequest) (*UpdateOnlineStatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateOnlineStatus not implemented")
+}
+func (UnimplementedUserClientServer) GetOnlineStatus(context.Context, *GetOnlineStatusRequest) (*GetOnlineStatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetOnlineStatus not implemented")
 }
 func (UnimplementedUserClientServer) mustEmbedUnimplementedUserClientServer() {}
 func (UnimplementedUserClientServer) testEmbeddedByValue()                    {}
@@ -172,6 +220,60 @@ func _UserClient_PersonalInfo_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserClient_ResetPassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ResetPasswordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserClientServer).ResetPassword(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserClient_ResetPassword_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserClientServer).ResetPassword(ctx, req.(*ResetPasswordRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserClient_UpdateOnlineStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateOnlineStatusRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserClientServer).UpdateOnlineStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserClient_UpdateOnlineStatus_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserClientServer).UpdateOnlineStatus(ctx, req.(*UpdateOnlineStatusRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserClient_GetOnlineStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetOnlineStatusRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserClientServer).GetOnlineStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserClient_GetOnlineStatus_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserClientServer).GetOnlineStatus(ctx, req.(*GetOnlineStatusRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserClient_ServiceDesc is the grpc.ServiceDesc for UserClient service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -190,6 +292,18 @@ var UserClient_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PersonalInfo",
 			Handler:    _UserClient_PersonalInfo_Handler,
+		},
+		{
+			MethodName: "ResetPassword",
+			Handler:    _UserClient_ResetPassword_Handler,
+		},
+		{
+			MethodName: "UpdateOnlineStatus",
+			Handler:    _UserClient_UpdateOnlineStatus_Handler,
+		},
+		{
+			MethodName: "GetOnlineStatus",
+			Handler:    _UserClient_GetOnlineStatus_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -37,3 +37,18 @@ func (s *UserClientServer) PersonalInfo(ctx context.Context, in *user.PersonalIn
 	l := logic.NewPersonalInfoLogic(ctx, s.svcCtx)
 	return l.PersonalInfo(in)
 }
+
+func (s *UserClientServer) ResetPassword(ctx context.Context, in *user.ResetPasswordRequest) (*user.ResetPasswordResponse, error) {
+	l := logic.NewResetPasswordLogic(ctx, s.svcCtx)
+	return l.ResetPassword(in)
+}
+
+func (s *UserClientServer) UpdateOnlineStatus(ctx context.Context, in *user.UpdateOnlineStatusRequest) (*user.UpdateOnlineStatusResponse, error) {
+	l := logic.NewUpdateOnlineStatusLogic(ctx, s.svcCtx)
+	return l.UpdateOnlineStatus(in)
+}
+
+func (s *UserClientServer) GetOnlineStatus(ctx context.Context, in *user.GetOnlineStatusRequest) (*user.GetOnlineStatusResponse, error) {
+	l := logic.NewGetOnlineStatusLogic(ctx, s.svcCtx)
+	return l.GetOnlineStatus(in)
+}

@@ -10,6 +10,12 @@ import (
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
 
+// Redis key前缀
+const (
+	UserOnlineKeyPrefix     = "user:online:"      // 用户在线状态key前缀
+	UserLastOnlineKeyPrefix = "user:last_online:" // 用户最后在线时间key前缀
+)
+
 var _ UserModel = (*customUserModel)(nil)
 
 type (

@@ -35,9 +35,38 @@ message PersonalInfoResponse {
     string avatarUrl = 5;
 }
 
+message ResetPasswordRequest {
+    string email = 1;
+    string oldPassword = 2; // 旧密码
+    string newPassword = 3; // 新密码
+}
+message ResetPasswordResponse {
+    bool success = 1;
+}
+
+// 更新用户在线状态
+message UpdateOnlineStatusRequest {
+    int64 userId = 1;
+    bool isOnline = 2;
+}
+message UpdateOnlineStatusResponse {
+}
+
+// 获取用户在线状态
+message GetOnlineStatusRequest {
+    int64 userId = 1;
+}
+message GetOnlineStatusResponse {
+    bool isOnline = 1;
+    int64 lastOnlineTime = 2;
+}
+
 
 service UserClient {
     rpc Login(LoginRequest) returns(LoginResponse);
     rpc Register(RegisterRequest) returns(RegisterResponse);
     rpc PersonalInfo(PersonalInfoRequest) returns(PersonalInfoResponse);
+    rpc ResetPassword(ResetPasswordRequest) returns(ResetPasswordResponse);
+    rpc UpdateOnlineStatus(UpdateOnlineStatusRequest) returns(UpdateOnlineStatusResponse);
+    rpc GetOnlineStatus(GetOnlineStatusRequest) returns(GetOnlineStatusResponse);
 }

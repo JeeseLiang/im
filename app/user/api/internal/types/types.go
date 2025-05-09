@@ -37,3 +37,13 @@ type RegisterRequest struct {
 
 type RegisterResponse struct {
 }
+
+type ResetPasswordRequest struct {
+	Email       string `json:"email" validate:"required,email"`
+	OldPassword string `json:"oldPassword" validate:"required,min=6,max=16"`
+	NewPassword string `json:"newPassword" validate:"required,min=6,max=16"`
+}
+
+type ResetPasswordResponse struct {
+	Success bool `json:"success"`
+}
