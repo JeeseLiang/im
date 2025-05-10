@@ -32,3 +32,4 @@ deploy/
 *.conf
 *.yml
 .vscode
+start.*
