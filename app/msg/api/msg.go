@@ -24,7 +24,7 @@ func main() {
 	// 读取.env
 	err := godotenv.Load("../../../.env")
 	if err != nil {
-		logx.Errorf("加载 .env 文件失败: %v", err)
+		logx.Infof("加载 .env 文件失败: %v", err)
 	}
 	flag.Parse()
 
