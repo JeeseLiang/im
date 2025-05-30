@@ -1,271 +1,99 @@
-version: '3.8'
+version: '3'
 
+# docker-compose 部署中间件服务
 services:
-  # 用户服务
-  user-api:
-    build:
-      context: .
-      dockerfile: app/user/api/Dockerfile
-    container_name: user-api
-    ports:
-      - "8888:8888"
-    environment:
-      - TZ=Asia/Shanghai
-      - MYSQL_HOST=mysql
-      - MYSQL_PORT=3306
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_DATABASE=im_message
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
-      - KAFKA_BROKERS=kafka0:9093,kafka1:9094
-      - JAEGER_AGENT_HOST=jaeger
-      - JAEGER_AGENT_PORT=6831
-    depends_on:
-      - mysql
-      - redis
-      - kafka0
-      - kafka1
-      - jaeger
-    networks:
-      - im-network
-    restart: always
-
-  user-rpc:
-    build:
-      context: .
-      dockerfile: app/user/rpc/Dockerfile
-    container_name: user-rpc
-    environment:
-      - TZ=Asia/Shanghai
-      - MYSQL_HOST=mysql
-      - MYSQL_PORT=3306
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_DATABASE=im_message
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
-      - KAFKA_BROKERS=kafka0:9093,kafka1:9094
-      - JAEGER_AGENT_HOST=jaeger
-      - JAEGER_AGENT_PORT=6831
-    depends_on:
-      - mysql
-      - redis
-      - kafka0
-      - kafka1
-      - jaeger
-    networks:
-      - im-network
-    restart: always
-
-  # 群组服务
-  group-api:
-    build:
-      context: .
-      dockerfile: app/group/api/Dockerfile
-    container_name: group-api
-    ports:
-      - "8889:8889"
-    environment:
-      - TZ=Asia/Shanghai
-      - MYSQL_HOST=mysql
-      - MYSQL_PORT=3306
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_DATABASE=im_message
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
-      - KAFKA_BROKERS=kafka0:9093,kafka1:9094
-      - JAEGER_AGENT_HOST=jaeger
-      - JAEGER_AGENT_PORT=6831
-    depends_on:
-      - mysql
-      - redis
-      - kafka0
-      - kafka1
-      - jaeger
-    networks:
-      - im-network
-    restart: always
-
-  group-rpc:
-    build:
-      context: .
-      dockerfile: app/group/rpc/Dockerfile
-    container_name: group-rpc
-    environment:
-      - TZ=Asia/Shanghai
-      - MYSQL_HOST=mysql
-      - MYSQL_PORT=3306
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_DATABASE=im_message
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
-      - KAFKA_BROKERS=kafka0:9093,kafka1:9094
-      - JAEGER_AGENT_HOST=jaeger
-      - JAEGER_AGENT_PORT=6831
-    depends_on:
-      - mysql
-      - redis
-      - kafka0
-      - kafka1
-      - jaeger
-    networks:
-      - im-network
-    restart: always
-
-  # 消息服务
-  msg-api:
-    build:
-      context: .
-      dockerfile: app/msg/api/Dockerfile
-    container_name: msg-api
-    ports:
-      - "8890:8890"
-    environment:
-      - TZ=Asia/Shanghai
-      - MYSQL_HOST=mysql
-      - MYSQL_PORT=3306
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_DATABASE=im_message
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
-      - KAFKA_BROKERS=kafka0:9093,kafka1:9094
-      - JAEGER_AGENT_HOST=jaeger
-      - JAEGER_AGENT_PORT=6831
-    depends_on:
-      - mysql
-      - redis
-      - kafka0
-      - kafka1
-      - jaeger
-    networks:
-      - im-network
-    restart: always
-
-  msg-rpc:
-    build:
-      context: .
-      dockerfile: app/msg/rpc/Dockerfile
-    container_name: msg-rpc
-    environment:
-      - TZ=Asia/Shanghai
-      - MYSQL_HOST=mysql
-      - MYSQL_PORT=3306
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_DATABASE=im_message
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
-      - KAFKA_BROKERS=kafka0:9093,kafka1:9094
-      - JAEGER_AGENT_HOST=jaeger
-      - JAEGER_AGENT_PORT=6831
-    depends_on:
-      - mysql
-      - redis
-      - kafka0
-      - kafka1
-      - jaeger
-    networks:
-      - im-network
-    restart: always
-
-  # 基础设施服务
   mysql:
+    # 关系型数据库
     image: mysql:8.0.26
     container_name: mysql_im
     environment:
-      - TZ=Asia/Shanghai
-      - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_DATABASE=im_message
+      # 时区上海
+      TZ: Asia/Shanghai
+      # root 密码
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+      # 创建一个数据库
+      MYSQL_DATABASE: "im_message"
     ports:
-      - "3306:3306"
+      - 3306:3306
     volumes:
-      - mysql_data:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci --explicit_defaults_for_timestamp=true --lower_case_table_names=1
-    networks:
-      - im-network
+      # 数据挂载
+      - ./data/mysql/data:/var/lib/mysql
+      # 日志
+    command:
+      # 将mysql8.0默认密码策略 修改为 原先 策略 (mysql8.0对其默认策略做了更改 会导致密码无法匹配)
+      --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci --explicit_defaults_for_timestamp=true --lower_case_table_names=1
+    privileged: true
     restart: always
 
   redis:
+    # 缓存
     image: redis:6.2.5
     container_name: redis_im
     ports:
-      - "6379:6379"
+      - 6379:6379
     environment:
-      - TZ=Asia/Shanghai
+      # 时区上海
+      TZ: Asia/Shanghai
     volumes:
-      - redis_data:/data
-    command: redis-server --requirepass ${REDIS_PASSWORD} --appendonly yes
-    networks:
-      - im-network
+      # 数据文件
+      - ./data/redis/data:/data:rw
+    command: "redis-server --requirepass ${REDIS_PASSWORD} --appendonly yes"
+    privileged: true
     restart: always
 
-  zookeeper:
-    image: wurstmeister/zookeeper
-    container_name: zookeeper
+  elasticsearch:
+    # 存储log_pilot收集的日志
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.4
+    container_name: elasticsearch
+    privileged: true
+    user: root
     environment:
-      - TZ=Asia/Shanghai
-    ports:
-      - "2181:2181"
-    networks:
-      - im-network
-    restart: always
-
-  kafka0:
-    image: wurstmeister/kafka
-    container_name: kafka0
-    ports:
-      - "9093:9093"
-    environment:
-      - KAFKA_BROKER_ID=0
-      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
-      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka0:9093
-      - KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9093
-      - KAFKA_AUTO_CREATE_TOPICS_ENABLE=false
-      - KAFKA_DELETE_TOPIC_ENABLE=true
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - TZ=Asia/Shanghai
     volumes:
-      - kafka0_data:/var/lib/kafka/data
+      - ./data/elasticsearch/data:/usr/share/elasticsearch/data
+    restart: always
+    ports:
+      - 9200:9200
+      - 9300:9300
+
+  kibana:
+    # 查看elasticsearch数据
+    image: docker.elastic.co/kibana/kibana:7.13.4
+    container_name: kibana
+    environment:
+      - elasticsearch.hosts=http://elasticsearch:9200
+      - TZ=Asia/Shanghai
+    restart: always
+    ports:
+      - "5601:5601"
     depends_on:
-      - zookeeper
-    networks:
-      - im-network
-    restart: always
+      - elasticsearch
 
-  kafka1:
-    image: wurstmeister/kafka
-    container_name: kafka1
-    ports:
-      - "9094:9094"
-    environment:
-      - KAFKA_BROKER_ID=1
-      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
-      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka1:9094
-      - KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9094
-      - KAFKA_AUTO_CREATE_TOPICS_ENABLE=false
-      - KAFKA_DELETE_TOPIC_ENABLE=true
-      - TZ=Asia/Shanghai
-    volumes:
-      - kafka1_data:/var/lib/kafka/data
-    depends_on:
-      - zookeeper
-    networks:
-      - im-network
+  log_pilot:
+    # 日志收集器
+    container_name: log_pilot
+    image: registry.cn-hangzhou.aliyuncs.com/acs-sample/log-pilot:0.9.5-filebeat
     restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/localtime:/etc/localtime
+      - /:/host
+    privileged: true
+    depends_on:
+      - elasticsearch
+    environment:
+      PILOT_LOG_PREFIX: dev
+      LOGGING_OUTPUT: elasticsearch
+      ELASTICSEARCH_HOST: elasticsearch
+      ELASTICSEARCH_PORT: 9200
 
   jaeger:
+    # 链路追踪
     image: jaegertracing/all-in-one:latest
     container_name: jaeger
+    restart: always
     ports:
       - "5775:5775/udp"
       - "6831:6831/udp"
@@ -275,48 +103,76 @@ services:
       - "14268:14268"
       - "9411:9411"
     environment:
-      - SPAN_STORAGE_TYPE=memory
+      - SPAN_STORAGE_TYPE=elasticsearch
+      - ES_SERVER_URLS=http://elasticsearch:9200
       - LOG_LEVEL=debug
-    networks:
-      - im-network
-    restart: always
 
-  # 监控和日志
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: prometheus
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-      - prometheus_data:/prometheus
-    networks:
-      - im-network
-    restart: always
-
-  grafana:
-    image: grafana/grafana:latest
-    container_name: grafana
-    ports:
-      - "3000:3000"
-    volumes:
-      - grafana_data:/var/lib/grafana
+  #zookeeper是kafka的依赖
+  zookeeper:
+    image: wurstmeister/zookeeper
+    container_name: zookeeper
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
-    depends_on:
-      - prometheus
-    networks:
-      - im-network
+      # 时区上海
+      TZ: Asia/Shanghai
     restart: always
+    ports:
+      - 2181:2181
 
-networks:
-  im-network:
-    driver: bridge
+  #消息队列
+  kafka0:
+    image: wurstmeister/kafka
+    container_name: kafka0
+    restart: always
+    depends_on:
+      - zookeeper
+    ports:
+      - 9093:9093
+    environment:
+      - KAFKA_ADVERTISED_HOST_NAME=kafka0
+      - KAFKA_AUTO_CREATE_TOPICS_ENABLE=false
+      - KAFKA_DELETE_TOPIC_ENABLE=true
+      - KAFKA_BROKER_ID=0
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${SERVER_IP}:9093
+      - KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9093
+      - TZ=Asia/Shanghai
+      - KAFKA_LOG_RETENTION_HOURS=24
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
 
-volumes:
-  mysql_data:
-  redis_data:
-  kafka0_data:
-  kafka1_data:
-  prometheus_data:
-  grafana_data:
+
+  #消息队列
+  kafka1:
+    image: wurstmeister/kafka
+    container_name: kafka1
+    restart: always
+    depends_on:
+      - zookeeper
+    ports:
+      - 9094:9094
+    environment:
+      - KAFKA_ADVERTISED_HOST_NAME=kafka1
+      - KAFKA_AUTO_CREATE_TOPICS_ENABLE=false
+      - KAFKA_DELETE_TOPIC_ENABLE=true
+      - KAFKA_BROKER_ID=1
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${SERVER_IP}:9094
+      - KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9094
+      - TZ=Asia/Shanghai
+      - KAFKA_LOG_RETENTION_HOURS=24
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+
+  # kafka管理后台
+  kafkaAdmin:
+    image: dushixiang/kafka-map:latest
+    container_name: kafkaAdmin
+    ports:
+      - 8080:8080
+    environment:
+      - DEFAULT_USERNAME=admin
+      - DEFAULT_PASSWORD=admin
+    volumes:
+      - ./data/kafka-map/data:/usr/local/kafka-map/data
+    restart: always

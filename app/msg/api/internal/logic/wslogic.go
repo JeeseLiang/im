@@ -37,10 +37,10 @@ const (
 	pingPeriod = (pongWait * 9) / 10
 
 	// 每条消息的最大字节数
-	maxMessageSize = 512
+	maxMessageSize = 1024
 
-	// 最多缓存 待发送的10条消息
-	bufSize = 10
+	// 最多缓存 待发送的15条消息
+	bufSize = 15
 )
 
 var upgrader = websocket.Upgrader{
