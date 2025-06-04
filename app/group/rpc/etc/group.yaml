@@ -11,7 +11,7 @@ Db:
 
 Cache:
     - Host: ${SERVER_IP}:6379
-      Pass: ${REDIS_PASSWORD}
+      Pass: "${REDIS_PASSWORD}"
       Type: node
 
 Telemetry:

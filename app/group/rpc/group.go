@@ -20,13 +20,13 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-var configFile = flag.String("f", "app/group/rpc/etc/group.yaml", "the config file")
+var configFile = flag.String("f", "etc/group.yaml", "the config file")
 
 func main() {
 	// 读取.env
-	err := godotenv.Load("./.env")
+	err := godotenv.Load("../../../.env")
 	if err != nil {
-		logx.Errorf("加载 .env 文件失败: %v", err)
+		logx.Infof("加载 .env 文件失败: %v", err)
 	}
 	flag.Parse()
 

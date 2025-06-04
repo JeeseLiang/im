@@ -18,13 +18,13 @@ import (
 	"github.com/zeromicro/go-zero/rest"
 )
 
-var configFile = flag.String("f", "app/msg/api/etc/msg.yaml", "the config file")
+var configFile = flag.String("f", "etc/msg.yaml", "the config file")
 
 func main() {
 	// 读取.env
-	err := godotenv.Load("./.env")
+	err := godotenv.Load("../../../.env")
 	if err != nil {
-		logx.Errorf("加载 .env 文件失败: %v", err)
+		logx.Infof("加载 .env 文件失败: %v", err)
 	}
 	flag.Parse()
 

@@ -30,6 +30,5 @@ deploy/
 *.md
 *.sh
 *.conf
-*.yml
 .vscode
 start.*
