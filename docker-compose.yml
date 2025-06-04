@@ -51,6 +51,13 @@ services:
       - discovery.type=single-node
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - TZ=Asia/Shanghai
+    command: >
+      bash -c "
+        # 确保数据目录存在并设置正确权限,启动 Elasticsearch
+        mkdir -p /usr/share/elasticsearch/data &&
+        chown -R 1000:1000 /usr/share/elasticsearch/data &&
+        /usr/local/bin/docker-entrypoint.sh
+      "
     volumes:
       - ./data/elasticsearch/data:/usr/share/elasticsearch/data
     restart: always
@@ -71,23 +78,27 @@ services:
     depends_on:
       - elasticsearch
 
-  log_pilot:
-    # 日志收集器
-    container_name: log_pilot
-    image: registry.cn-hangzhou.aliyuncs.com/acs-sample/log-pilot:0.9.5-filebeat
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:7.13.4  # 官方 Filebeat 镜像
+    container_name: filebeat
+    user: root  # 确保有足够权限读取容器日志
     restart: always
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /etc/localtime:/etc/localtime
-      - /:/host
-    privileged: true
+      - /var/run/docker.sock:/var/run/docker.sock  # 用于发现容器
+      - /etc/localtime:/etc/localtime  # 同步时区
+      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml  # 挂载配置文件
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro  # 容器日志目录
+      - /var/log:/var/log:ro  # 系统日志目录
+    environment:
+      - output.elasticsearch.hosts=["elasticsearch:9200"]  # 连接到 Elasticsearch
+      - setup.kibana.host=kibana:5601  # 连接到 Kibana
+      - setup.dashboards.enabled=true  # 启用仪表盘
+      - TZ=Asia/Shanghai
     depends_on:
       - elasticsearch
-    environment:
-      PILOT_LOG_PREFIX: dev
-      LOGGING_OUTPUT: elasticsearch
-      ELASTICSEARCH_HOST: elasticsearch
-      ELASTICSEARCH_PORT: 9200
+      - kibana
+    networks:
+      - im_network
 
   jaeger:
     # 链路追踪
@@ -118,7 +129,7 @@ services:
     ports:
       - 2181:2181
 
-  #消息队列
+  #消息队列0
   kafka0:
     image: wurstmeister/kafka
     container_name: kafka0
@@ -133,15 +144,20 @@ services:
       - KAFKA_DELETE_TOPIC_ENABLE=true
       - KAFKA_BROKER_ID=0
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
-      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${SERVER_IP}:9093
-      - KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9093
+      - KAFKA_LISTENERS=INTERNAL://0.0.0.0:19093,EXTERNAL://0.0.0.0:9093
+      - KAFKA_ADVERTISED_LISTENERS=INTERNAL://kafka0:19093,EXTERNAL://${SERVER_IP}:9093
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      - KAFKA_INTER_BROKER_LISTENER_NAME=INTERNAL
       - TZ=Asia/Shanghai
       - KAFKA_LOG_RETENTION_HOURS=24
+      - KAFKA_HEAP_OPTS="-Xmx512M -Xms256M"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - im_network
 
 
-  #消息队列
+  #消息队列1
   kafka1:
     image: wurstmeister/kafka
     container_name: kafka1
@@ -156,15 +172,20 @@ services:
       - KAFKA_DELETE_TOPIC_ENABLE=true
       - KAFKA_BROKER_ID=1
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
-      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${SERVER_IP}:9094
-      - KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9094
+      - KAFKA_LISTENERS=INTERNAL://0.0.0.0:19094,EXTERNAL://0.0.0.0:9094
+      - KAFKA_ADVERTISED_LISTENERS=INTERNAL://kafka1:19094,EXTERNAL://${SERVER_IP}:9094
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      - KAFKA_INTER_BROKER_LISTENER_NAME=INTERNAL
       - TZ=Asia/Shanghai
       - KAFKA_LOG_RETENTION_HOURS=24
+      - KAFKA_HEAP_OPTS="-Xmx512M -Xms256M"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - im_network
 
 
-  # kafka管理后台
+    # kafka管理后台
   kafkaAdmin:
     image: dushixiang/kafka-map:latest
     container_name: kafkaAdmin
@@ -176,3 +197,9 @@ services:
     volumes:
       - ./data/kafka-map/data:/usr/local/kafka-map/data
     restart: always
+    networks:
+      - im_network
+
+networks:
+  im_network:
+    driver: bridge

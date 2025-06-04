@@ -1,0 +1,28 @@
+filebeat.config:
+  modules:
+    path: ${path.config}/modules.d/*.yml
+    reload.enabled: false
+
+# 收集 Docker 容器日志
+filebeat.inputs:
+  - type: container
+    paths:
+      - /var/lib/docker/containers/*/*.log
+    processors:
+      - add_docker_metadata:
+          host: "unix:///var/run/docker.sock"
+      - add_host_metadata: ~
+      - add_cloud_metadata: ~
+      - add_kubernetes_metadata: ~
+
+# 输出到 Elasticsearch
+output.elasticsearch:
+  hosts: ["elasticsearch:9200"]
+  index: "dev-%{[agent.version]}-%{+yyyy.MM.dd}"  # 保留原有的前缀 "dev-"
+
+# 设置 Kibana 仪表盘
+setup:
+  kibana:
+    host: "kibana:5601"
+  dashboards:
+    enabled: true
