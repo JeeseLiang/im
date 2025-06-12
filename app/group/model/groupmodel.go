@@ -4,14 +4,20 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"time"
 
 	"im_message/common/biz"
+	"im_message/common/xlock"
 
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
 
 var _ GroupModel = (*customGroupModel)(nil)
+
+const (
+	lockGroupPrefix = "lock:group:"
+)
 
 type (
 	// GroupModel is an interface to be customized, add more methods here,
@@ -24,14 +30,86 @@ type (
 
 	customGroupModel struct {
 		*defaultGroupModel
+		lock *xlock.RedisLock
 	}
 )
 
 // NewGroupModel returns a model for the database table.
-func NewGroupModel(conn sqlx.SqlConn, c cache.CacheConf) GroupModel {
+func NewGroupModel(conn sqlx.SqlConn, c cache.CacheConf, lock *xlock.RedisLock) GroupModel {
 	return &customGroupModel{
 		defaultGroupModel: newGroupModel(conn, c),
+		lock:              lock,
 	}
+}
+
+// 包装 Insert 方法
+func (m *customGroupModel) Insert(ctx context.Context, data *Group) (sql.Result, error) {
+	lockKey := fmt.Sprintf("%s%v", lockGroupPrefix, data.Id)
+
+	// 获取分布式锁
+	err := m.lock.Acquire(ctx, lockKey, data.Id, 10*time.Second)
+	if err != nil {
+		return nil, err
+	}
+	defer m.lock.Release(ctx, lockKey, data.Id)
+
+	return m.defaultGroupModel.Insert(ctx, data)
+}
+
+// 包装 TransInsert 方法
+func (m *customGroupModel) TransInsert(ctx context.Context, session sqlx.Session, data *Group) (sql.Result, error) {
+	lockKey := fmt.Sprintf("%s%v", lockGroupPrefix, data.Id)
+
+	// 获取分布式锁
+	err := m.lock.Acquire(ctx, lockKey, data.Id, 10*time.Second)
+	if err != nil {
+		return nil, err
+	}
+	defer m.lock.Release(ctx, lockKey, data.Id)
+
+	return m.defaultGroupModel.TransInsert(ctx, session, data)
+}
+
+// 包装 Update 方法
+func (m *customGroupModel) Update(ctx context.Context, data *Group) error {
+	lockKey := fmt.Sprintf("%s%v", lockGroupPrefix, data.Id)
+
+	// 获取分布式锁
+	err := m.lock.Acquire(ctx, lockKey, data.Id, 10*time.Second)
+	if err != nil {
+		return err
+	}
+	defer m.lock.Release(ctx, lockKey, data.Id)
+
+	return m.defaultGroupModel.Update(ctx, data)
+}
+
+// 包装 TransUpdate 方法
+func (m *customGroupModel) TransUpdate(ctx context.Context, session sqlx.Session, data *Group) error {
+	lockKey := fmt.Sprintf("%s%v", lockGroupPrefix, data.Id)
+
+	// 获取分布式锁
+	err := m.lock.Acquire(ctx, lockKey, data.Id, 10*time.Second)
+	if err != nil {
+		return err
+	}
+	defer m.lock.Release(ctx, lockKey, data.Id)
+
+	return m.defaultGroupModel.TransUpdate(ctx, session, data)
+}
+
+// 包装 Delete 方法
+func (m *customGroupModel) Delete(ctx context.Context, id string) error {
+	lockKey := fmt.Sprintf("%s%v", lockGroupPrefix, id)
+
+	// 获取分布式锁
+	err := m.lock.Acquire(ctx, lockKey, id, 10*time.Second)
+	if err != nil {
+		return err
+	}
+	defer m.lock.Release(ctx, lockKey, id)
+
+	return m.defaultGroupModel.Delete(ctx, id)
 }
 
 func (m *defaultGroupModel) CreateGroup(ctx context.Context, session sqlx.Session, userId int64, groupName string) (string, error) {

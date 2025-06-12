@@ -10,7 +10,11 @@ type Config struct {
 	Db struct {
 		DataSource string
 	}
-	Cache cache.CacheConf
+	Cache      cache.CacheConf
+	CacheRedis []struct {
+		Host string
+		Pass string
+	}
 	MqConf struct {
 		Brokers []string
 		Topic   string

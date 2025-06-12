@@ -40,7 +40,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
 		Config:         c,
 		UserModel:      modelUser.NewUserModel(conn, c.CacheRedis),
-		GroupModel:     modelGroup.NewGroupModel(conn, c.CacheRedis),
+		GroupModel:     modelGroup.NewGroupModel(conn, c.CacheRedis, lock),
 		GroupUserModel: modelGroup.NewGroupUserModel(conn, c.CacheRedis),
 		ChatMsgModel:   modelMsg.NewChatMsgModel(conn, c.CacheRedis),
 		Redis:          redisClient,

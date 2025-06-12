@@ -48,16 +48,6 @@ func (l *LoginLogic) Login(in *user.LoginRequest) (*user.LoginResponse, error) {
 			"user login password error, password:%s", in.Password, err)
 	}
 
-	// 获取分布式锁，防止重复登录
-	lockKey := fmt.Sprintf("login:lock:%d", userModel.Id)
-	lockValue := fmt.Sprintf("%d:%d", userModel.Id, time.Now().UnixNano())
-	err = l.svcCtx.Lock.Acquire(l.ctx, lockKey, lockValue, 10*time.Second)
-	if err != nil {
-		return nil, errors.Wrapf(xerr.NewErrCode(xerr.USER_ALREADY_LOGIN),
-			"user already login, userId:%d", userModel.Id)
-	}
-	defer l.svcCtx.Lock.Release(l.ctx, lockKey, lockValue)
-
 	// 生成jwt
 	accessSecret := l.svcCtx.Config.JwtAuth.AccessSecret
 	accessExpire := l.svcCtx.Config.JwtAuth.AccessExpire
