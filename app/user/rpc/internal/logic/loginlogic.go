@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"im_message/app/user/model"
@@ -46,6 +47,17 @@ func (l *LoginLogic) Login(in *user.LoginRequest) (*user.LoginResponse, error) {
 		return nil, errors.Wrapf(xerr.NewErrCode(xerr.UNAUTHORIZED),
 			"user login password error, password:%s", in.Password, err)
 	}
+
+	// 获取分布式锁，防止重复登录
+	lockKey := fmt.Sprintf("login:lock:%d", userModel.Id)
+	lockValue := fmt.Sprintf("%d:%d", userModel.Id, time.Now().UnixNano())
+	err = l.svcCtx.Lock.Acquire(l.ctx, lockKey, lockValue, 10*time.Second)
+	if err != nil {
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.USER_ALREADY_LOGIN),
+			"user already login, userId:%d", userModel.Id)
+	}
+	defer l.svcCtx.Lock.Release(l.ctx, lockKey, lockValue)
+
 	// 生成jwt
 	accessSecret := l.svcCtx.Config.JwtAuth.AccessSecret
 	accessExpire := l.svcCtx.Config.JwtAuth.AccessExpire
@@ -54,6 +66,18 @@ func (l *LoginLogic) Login(in *user.LoginRequest) (*user.LoginResponse, error) {
 		return nil, errors.Wrapf(xerr.NewErrMsg("generate token fail"),
 			"getJwtToken err userId:%d, err:%v", userModel.Id, err)
 	}
+
+	// 更新用户在线状态
+	onlineKey := fmt.Sprintf("%s%d", model.UserOnlineKeyPrefix, userModel.Id)
+	lastOnlineKey := fmt.Sprintf("%s%d", model.UserLastOnlineKeyPrefix, userModel.Id)
+	pipe := l.svcCtx.Redis.Pipeline()
+	pipe.Set(l.ctx, onlineKey, "1", 0)
+	pipe.Set(l.ctx, lastOnlineKey, time.Now().Unix(), 0)
+	_, err = pipe.Exec(l.ctx)
+	if err != nil {
+		l.Logger.Errorf("update online status failed, userId:%d, err:%v", userModel.Id, err)
+	}
+
 	return &user.LoginResponse{
 		AccessToken:  accessToken,
 		AccessExpire: accessExpire,

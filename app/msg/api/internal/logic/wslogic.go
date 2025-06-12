@@ -89,7 +89,7 @@ func (g *Group) Run() {
 	for {
 		select {
 		case client := <-g.onEnter: // 刚刚上线
-			fmt.Printf("group handle onEnter, client:%+v\n", client)
+			logx.Infof("group handle onEnter, client:%+v\n", client)
 			g.onlineClients[client] = true
 			logx.Infof("用户加入群组, groupId:%s, clientId:%s", g.id, client.idPlatform)
 		case client := <-g.onLeave: // 刚刚离线
@@ -102,7 +102,7 @@ func (g *Group) Run() {
 				case client.onSend <- message:
 					logx.Info("group send message to client")
 				default:
-					fmt.Println("客户端缓存满了, 可能是连接异常, 让客户端离线")
+					logx.Info("客户端缓存满了, 可能是连接异常, 让客户端离线")
 					g.onLeave <- client
 				}
 			}
@@ -158,7 +158,7 @@ func ConsumeMsgFromMQ(svc *svc.ServiceContext) {
 
 // 从MQ中取出客户端上传的消息, 放到该群的广播队列中
 func (c *Client) readPump(svc *svc.ServiceContext) {
-	fmt.Println("readPump")
+	logx.Info("readPump")
 	defer func() {
 		for _, group := range c.groupMap {
 			group.onLeave <- c
@@ -174,13 +174,13 @@ func (c *Client) readPump(svc *svc.ServiceContext) {
 			logx.Infof("【RPC-SRV-INFO】client %s disconnect, reason: %+v", c.idPlatform, err)
 			break
 		}
-		fmt.Println("readPump msg:", string(msg)) // ws消息不做其它处理, 因为消息是通过http上传的
+		logx.Info("readPump msg:", string(msg)) // ws消息不做其它处理, 因为消息是通过http上传的
 	}
 }
 
 // 向客户端的wsConn中写入数据
 func (c *Client) writePump() {
-	fmt.Println("writePump")
+	logx.Infof("writePump\n")
 	ticker := time.NewTicker(pingPeriod)
 	defer func() {
 		ticker.Stop()
@@ -221,7 +221,7 @@ func (c *Client) writePump() {
 
 // 处理客户端连接
 func ServeWs(svc *svc.ServiceContext, w http.ResponseWriter, r *http.Request) error {
-	fmt.Println("ServeWs")
+	logx.Infof("ServeWs\n")
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		return xerr.NewErrCodeMsg(xerr.WS_ERROR, "websocket upgrade failed")
@@ -248,7 +248,7 @@ func ServeWs(svc *svc.ServiceContext, w http.ResponseWriter, r *http.Request) er
 		conn:       conn,
 		onSend:     make(chan []byte, bufSize),
 	}
-	fmt.Printf("客户端连接, client:%+v\n", client)
+	logx.Infof("客户端连接, client:%+v\n", client)
 	// 用户进入群组, 默认加入系统通知群组(以0_uid标识)
 	userGroupIdList := append(resp.List, biz.GetGroupId(0, uid))
 	for _, groupId := range userGroupIdList {
