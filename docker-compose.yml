@@ -17,13 +17,16 @@ services:
       - 3306:3306
     volumes:
       # 数据挂载
-      - ./data/mysql/data:/var/lib/mysql
-      # 日志
+      - ./data/mysql_im/data:/var/lib/mysql
+      # 初始化SQL
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     command:
       # 将mysql8.0默认密码策略 修改为 原先 策略 (mysql8.0对其默认策略做了更改 会导致密码无法匹配)
       --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci --explicit_defaults_for_timestamp=true --lower_case_table_names=1
     privileged: true
     restart: always
+    networks:
+      - im_network
 
   redis:
     # 缓存
@@ -40,6 +43,8 @@ services:
     command: "redis-server --requirepass ${REDIS_PASSWORD} --appendonly yes"
     privileged: true
     restart: always
+    networks:
+      - im_network
 
   elasticsearch:
     # 存储log_pilot收集的日志
@@ -64,6 +69,8 @@ services:
     ports:
       - 9200:9200
       - 9300:9300
+    networks:
+      - im_network
 
   kibana:
     # 查看elasticsearch数据
@@ -77,12 +84,17 @@ services:
       - "5601:5601"
     depends_on:
       - elasticsearch
+    networks:
+      - im_network
 
   filebeat:
     image: docker.elastic.co/beats/filebeat:7.13.4  # 官方 Filebeat 镜像
     container_name: filebeat
     user: root  # 确保有足够权限读取容器日志
     restart: always
+    command: >
+      sh -c 'chmod go-w /usr/share/filebeat/filebeat.yml && 
+         filebeat -e -c /usr/share/filebeat/filebeat.yml'
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock  # 用于发现容器
       - /etc/localtime:/etc/localtime  # 同步时区
@@ -117,6 +129,8 @@ services:
       - SPAN_STORAGE_TYPE=elasticsearch
       - ES_SERVER_URLS=http://elasticsearch:9200
       - LOG_LEVEL=debug
+    networks:
+      - im_network
 
   #zookeeper是kafka的依赖
   zookeeper:
@@ -128,6 +142,8 @@ services:
     restart: always
     ports:
       - 2181:2181
+    networks:
+      - im_network
 
   #消息队列0
   kafka0:

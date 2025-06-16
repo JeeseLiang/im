@@ -31,8 +31,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 
 	// 初始化Redis客户端
 	redisClient := redis.NewClient(&redis.Options{
-		Addr:     c.CacheRedis[0].Host,
-		Password: c.CacheRedis[0].Pass,
+		Addr:     c.Cache[0].Host,
+		Password: c.Cache[0].Pass,
 		DB:       0,
 	})
 
