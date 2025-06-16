@@ -10,7 +10,7 @@ type Config struct {
 	Db struct {
 		DataSource string
 	}
-	Cache cache.CacheConf
+	Cache  cache.CacheConf
 	MqConf struct {
 		Brokers []string
 		Topic   string

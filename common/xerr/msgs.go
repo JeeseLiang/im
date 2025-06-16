@@ -9,12 +9,14 @@ var mapCodeMsg = map[uint32]string{
 	NO_DATA:      "没有数据",
 	DATA_EXIST:   "数据已存在",
 
-	SERVER_ERROR: "服务端开小差啦,请稍后再试一试",
-	DB_ERROR:     "数据库操作异常",
-	CACHE_ERROR:  "缓存操作异常",
+	SERVER_ERROR:  "服务端开小差啦,请稍后再试一试",
+	DB_ERROR:      "数据库操作异常",
+	CACHE_ERROR:   "缓存操作异常",
 	MARSHAL_ERROR: "序列化异常",
-	MQ_ERROR: "消息队列操作异常",
-	WS_ERROR: "websocket操作异常",
+	MQ_ERROR:      "消息队列操作异常",
+	WS_ERROR:      "websocket操作异常",
+
+	USER_ALREADY_LOGIN: "用户已登录",
 }
 
 func CodeToMsg(code uint32) string {

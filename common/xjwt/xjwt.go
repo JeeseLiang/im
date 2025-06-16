@@ -11,7 +11,3 @@ func GetJwtToken(secretKey string, iat, seconds, uid int64) (string, error) {
 	token.Claims = claims
 	return token.SignedString([]byte(secretKey))
 }
-
-// func GetUidFromToken(token string, secretKey string) (int64, error) {
-
-// }

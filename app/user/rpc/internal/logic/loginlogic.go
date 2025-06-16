@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"im_message/app/user/model"
@@ -46,6 +47,7 @@ func (l *LoginLogic) Login(in *user.LoginRequest) (*user.LoginResponse, error) {
 		return nil, errors.Wrapf(xerr.NewErrCode(xerr.UNAUTHORIZED),
 			"user login password error, password:%s", in.Password, err)
 	}
+
 	// 生成jwt
 	accessSecret := l.svcCtx.Config.JwtAuth.AccessSecret
 	accessExpire := l.svcCtx.Config.JwtAuth.AccessExpire
@@ -54,6 +56,18 @@ func (l *LoginLogic) Login(in *user.LoginRequest) (*user.LoginResponse, error) {
 		return nil, errors.Wrapf(xerr.NewErrMsg("generate token fail"),
 			"getJwtToken err userId:%d, err:%v", userModel.Id, err)
 	}
+
+	// 更新用户在线状态
+	onlineKey := fmt.Sprintf("%s%d", model.UserOnlineKeyPrefix, userModel.Id)
+	lastOnlineKey := fmt.Sprintf("%s%d", model.UserLastOnlineKeyPrefix, userModel.Id)
+	pipe := l.svcCtx.Redis.Pipeline()
+	pipe.Set(l.ctx, onlineKey, "1", 0)
+	pipe.Set(l.ctx, lastOnlineKey, time.Now().Unix(), 0)
+	_, err = pipe.Exec(l.ctx)
+	if err != nil {
+		l.Logger.Errorf("update online status failed, userId:%d, err:%v", userModel.Id, err)
+	}
+
 	return &user.LoginResponse{
 		AccessToken:  accessToken,
 		AccessExpire: accessExpire,
