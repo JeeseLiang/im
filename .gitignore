@@ -28,7 +28,5 @@ temp/
 deploy/
 .env
 *.md
-*.sh
 *.conf
 .vscode
-start.*
