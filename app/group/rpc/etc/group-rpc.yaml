@@ -7,20 +7,20 @@ JwtAuth:
     AccessExpire: 31536000
 
 Db:
-    DataSource: root:${MYSQL_PASSWORD}@tcp(${SERVER_IP}:3306)/${DBNAME}?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+    DataSource: root:${MYSQL_PASSWORD}@tcp(${MYSQL_HOST}:3306)/${DBNAME}?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
 
 Cache:
-    - Host: ${SERVER_IP}:6379
+    - Host: ${REDIS_HOST}:6379
       Pass: "${REDIS_PASSWORD}"
       Type: node
 
 Telemetry:
     Name: group-rpc
-    Endpoint: http://${SERVER_IP}:14268/api/traces
+    Endpoint: http://${JAEGER_AGENT_HOST}:14268/api/traces
     Batcher: jaeger
 
 MqConf:
     Brokers:
-        - ${SERVER_IP}:9093
-        - ${SERVER_IP}:9094
+        - ${KAFKA0}:9093
+        - ${KAFKA1}:9094
     Topic: msg_chat

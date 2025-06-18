@@ -20,7 +20,7 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-var configFile = flag.String("f", "etc/group.yaml", "the config file")
+var configFile = flag.String("f", "etc/group-rpc.yaml", "the config file")
 
 func main() {
 	// 读取.env

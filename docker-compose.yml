@@ -200,7 +200,6 @@ services:
     networks:
       - im_network
 
-
     # kafka管理后台
   kafkaAdmin:
     image: dushixiang/kafka-map:latest
@@ -213,6 +212,30 @@ services:
     volumes:
       - ./data/kafka-map/data:/usr/local/kafka-map/data
     restart: always
+    networks:
+      - im_network
+  
+  app:
+    image: im_message:latest
+    container_name: im_message_test
+    ports:
+      - 10001:10001
+      - 10002:10002
+      - 10003:10003
+      - 20001:20001
+      - 20002:20002
+      - 20003:20003
+    restart: always
+    depends_on:
+      - mysql
+      - redis
+      - elasticsearch
+      - kibana
+      - filebeat
+      - jaeger
+      - kafka0
+      - kafka1
+      - kafkaAdmin
     networks:
       - im_network
 

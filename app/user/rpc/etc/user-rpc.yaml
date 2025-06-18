@@ -7,10 +7,10 @@ JwtAuth:
     AccessExpire: 31536000
 
 Db:
-    DataSource: root:${MYSQL_PASSWORD}@tcp(${SERVER_IP}:3306)/${DBNAME}?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+    DataSource: root:${MYSQL_PASSWORD}@tcp(${MYSQL_HOST}:3306)/${DBNAME}?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
 
 CacheRedis:
-    - Host: ${SERVER_IP}:6379
+    - Host: ${REDIS_HOST}:6379
       Pass: "${REDIS_PASSWORD}"
       Type: node
 
